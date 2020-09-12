@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main content">
+        <div class="title-group">
+            <div class="decoration">
+                <div class="times">×</div>
+                <div class="line"></div>
+                <div class="times">×</div>
+            </div>
+            <div class="title">
+            	<h1>九九乘法表</h1>
+            	<span>MULTIPLICATION CHART</span>
+            </div>
+            <div class="decoration">
+                <div class="times">×</div>
+                <div class="line"></div>
+                <div class="times">×</div>
+            </div>
+        </div>
+        <!-- <ul class="card">
+            <li class="num-title">1</li>
+            <li class="formula">1 × 1 ＝ 2</li>
+            <li class="formula">1 × 2 ＝ 2</li>
+            <li class="formula">1 × 3 ＝ 3</li>
+            <li class="formula">1 × 4 ＝ 4</li>
+            <li class="formula">1 × 5 ＝ 5</li>
+            <li class="formula">1 × 6 ＝ 6</li>
+            <li class="formula">1 × 7 ＝ 7</li>
+            <li class="formula">1 × 8 ＝ 8</li>
+            <li class="formula">1 × 9 ＝ 9</li>
+        </ul> -->
+    </div>
+    <div class="footer">
+        <div class="content">
+            Copyright © 2019 HexSchool. All rights reserved.
+        </div>
+    </div>
+    <script>
+        var content = document.querySelector('.content');
+        var open='<ul class="card">';
+        var end='</ul>'
+        for(let i=2;i<10;i++){
+            let titlestr="";
+            let formulastr="";
+            titlestr = '<li class="num-title">'+i+'</li>';
+            for(let j =1; j<10;j++){
+                formulastr += '<li class="formula">'+i+' × '+j+' ＝ '+i*j +'</li>';
+            }
+            content.innerHTML += open +titlestr + formulastr +end;
+        }
+    </script>
+</body>
+</html>

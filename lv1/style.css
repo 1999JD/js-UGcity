@@ -1,0 +1,86 @@
+body{
+    background-color: #F0F0F0;
+    color:#2EB738;
+    font-size: 24px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.content{
+    max-width: 1110px;
+    margin:0 auto;
+}
+.main{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top:80px;
+    margin-bottom:40px;
+}
+.title-group{
+    width: 350px;
+    height: 366px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.decoration{
+    width: 350px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.line{
+    width: 280px;
+    height: 1px;
+    background-color: #2EB738
+}
+h1{
+    font-size: 56px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: medium;
+    line-height: 78px;
+}
+.title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.card{
+    width: 350px;
+    height: 366px;
+    box-sizing: border-box;
+    background-color: white;
+    padding:64px 40px;
+    align-content: space-between;
+    margin-bottom: 40px;
+    border-radius: 100px 0 30px 0;
+    box-shadow: 0px 3px 10px #D8D8D8;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.num-title{
+    text-align: center;
+    font-size: 128px;
+    /* margin-bottom: 23px; */
+    line-height: 123px;
+    text-shadow: 4px 3px 0px #F0F0F0;
+    font-weight: bold;
+}
+.formula{
+    line-height: 33px;
+}
+.formula+.formula{
+    margin-top: 8px;
+}
+.formula:nth-child(5){
+    margin-top: 0;
+}
+.footer{
+    background-color: #2EB738;
+    font-size: 16px;
+    text-align: right;
+    color:white;
+    padding: 8px 0;
+    line-height: 18px;
+}
