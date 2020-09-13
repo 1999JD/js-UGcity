@@ -26,10 +26,11 @@
 
     <script>
     var timer = setInterval(function(){
-        var time=new Date();
+        var time = new Date(),
+            timeStr=new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
         var nowsec=time.getSeconds(),
             nowmin = time.getMinutes(),
-            nowhour = time.getUTCHours()+8;
+            nowhour =timeStr.slice(12,14);
         var secdeg=180+nowsec*6,
             mindeg=nowmin*6,
             hourdeg=-90+nowhour*30+(nowmin/12)*6;
