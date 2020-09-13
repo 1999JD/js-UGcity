@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+    <div class="clock">
+        <div class="center">
+            <div class="hour-hand">
+                <img src="./hour-hand.svg" alt="">
+            </div>
+            <div class="minute-hand">
+                <img src="./minute-hand.svg" alt="">
+            </div>
+            <div class="second-hand">
+                <img src="./second-hand.svg" alt="">
+            </div>
+        </div>
+    </div>
+
+    <script>
+    var timer = setInterval(function(){
+        var time=new Date();
+        var nowsec=time.getSeconds(),
+            nowmin = time.getMinutes(),
+            nowhour = time.getUTCHours()+8;
+        var secdeg=180+nowsec*6,
+            mindeg=nowmin*6,
+            hourdeg=-90+nowhour*30+(nowmin/12)*6;
+        document.querySelector(".second-hand").style.transform = "translateX(-50%) rotate("+secdeg+"deg)";
+        document.querySelector(".minute-hand").style.transform = "translateX(-50%) translateY(-100%) rotate("+mindeg+"deg)";
+        document.querySelector(".hour-hand").style.transform = "translateY(-50%) rotate("+hourdeg+"deg)";
+    },1000);
+
+    </script>
+</body>
+</html>

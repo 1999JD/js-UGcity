@@ -1,0 +1,36 @@
+body{
+    height: 100vh;
+    background-color: #293B29;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.clock{
+    width: 500px;
+    height: 500px;
+    background:url('./clock-bg.svg');
+    background-position: center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hour-hand,
+.minute-hand,
+.second-hand{
+    position: absolute;
+}
+.hour-hand{
+    transform: translateY(-50%);
+    transform-origin: left;
+}
+.minute-hand{
+    transform: translateX(-50%) translateY(-100%);
+    transform-origin: bottom;
+}
+.second-hand{
+    transform: translateX(-50%);
+    transform-origin: top;
+
+}
