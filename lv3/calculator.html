@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js新手地下城第三關-計算機</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="screen">
+            <div class="formula">
+                <span style="visibility: hidden;">0</span>
+            </div>
+            <div class="result">
+                0
+            </div>
+        </div>
+        <ul class="keyboard">
+            <li id="7">7</li>
+            <li id="8">8</li>
+            <li id="9">9</li>
+            <li id="/">÷</li>
+            <li id="4">4</li>
+            <li id="5">5</li>
+            <li id="6">6</li>
+            <li id="*">×</li>
+            <li id="1">1</li>
+            <li id="2">2</li>
+            <li id="3">3</li>
+            <li id="+">+</li>
+            <li id="0">0</li>
+            <li id="00">00</li>
+            <li id=".">.</li>
+            <li id="-">-</li>
+            <li id="empty">AC</li>
+            <li id="delete">⌫</li>
+            <li id="equal">=</li>
+        </ul>
+    </div>
+    <script>
+        var keyboard = document.querySelector('.keyboard');
+        var specialArr=["empty","delete","equal"];
+        var operatorsArr=["+","-","*","/","."];
+        var formula = document.querySelector('.formula');
+        var idformula="";
+        var result = document.querySelector('.result');
+        var last;
+
+        keyboard.addEventListener('click',function(e){
+            console.log(e.target.nodeName);
+            if(specialArr.indexOf(e.target.id)!=-1){
+                last=formula.innerText.length;
+                switch(e.target.id){
+                    case "empty":
+                        formula.innerHTML='<span style="visibility: hidden;">0</span>';
+                        idformula="";
+                        result.innerText ="0";
+                        break;
+                    case "delete":
+                        formula.innerText=formula.innerText.slice(0,last-1);
+                        idformula=formula.innerText.slice(0,last-1);
+                        break;
+                    case "equal":
+                        try{
+                            if(operatorsArr.indexOf(idformula.charAt(last-1))!=-1)idformula += "0";
+                            result.innerText=eval(idformula);
+                        }
+                        catch(e){
+                            alert(e);
+                        }
+                        formula.innerHTML='<span style="visibility: hidden;">0</span>';
+                        idformula="";
+                        break;
+                }
+            }
+            else if(operatorsArr.indexOf(e.target.id)!=-1){
+                //運算符號
+                idformula+=e.target.id;
+                formula.innerText+= e.target.innerText;
+            }
+            else if(e.target.nodeName=="UL"){
+                //ul 被點到
+                //donothing
+            }
+            else{
+                //數字
+                idformula+=e.target.innerText;
+                formula.innerText+=e.target.innerText;   
+            }
+
+        });
+        //判斷哪些位數後不給顯示。
+
+
+    </script>
+    
+</body>
+</html>
