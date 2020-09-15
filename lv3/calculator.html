@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>js新手地下城第三關-計算機</title>
-    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="../reset.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="calculator">
         <div class="screen">
             <div class="formula">
-                <span style="visibility: hidden;">0</span>
             </div>
             <div class="result">
                 0
@@ -46,23 +45,24 @@
         var formula = document.querySelector('.formula');
         var idformula="";
         var result = document.querySelector('.result');
-        var last;
 
         keyboard.addEventListener('click',function(e){
-            console.log(e.target.nodeName);
-            if(specialArr.indexOf(e.target.id)!=-1){
-                last=formula.innerText.length;
-                switch(e.target.id){
-                    case "empty":
+            let clicked =e.target.id;
+            switch(e.target.nodeName){
+                case "LI":
+                if(specialArr.indexOf(clicked)!=-1){
+                    let last=formula.innerText.length;
+                    switch(clicked){
+                        case "empty":
                         formula.innerHTML='<span style="visibility: hidden;">0</span>';
                         idformula="";
                         result.innerText ="0";
                         break;
-                    case "delete":
+                        case "delete":
                         formula.innerText=formula.innerText.slice(0,last-1);
                         idformula=formula.innerText.slice(0,last-1);
                         break;
-                    case "equal":
+                        case "equal":
                         try{
                             if(operatorsArr.indexOf(idformula.charAt(last-1))!=-1)idformula += "0";
                             result.innerText=eval(idformula);
@@ -73,25 +73,30 @@
                         formula.innerHTML='<span style="visibility: hidden;">0</span>';
                         idformula="";
                         break;
+                    }
                 }
+                else if(operatorsArr.indexOf(clicked)!=-1){
+                    //運算符號
+                    if(formula.innerText.length>=39)alert('超過可輸入字元');
+                    else{
+                        idformula+=clicked;
+                        formula.innerText+= e.target.innerText;
+                    }
+                }
+                else{
+                    //數字                    
+                    if(formula.innerText.length>=39)alert('超過可輸入字元');
+                    else{
+                        idformula+=clicked;
+                        formula.innerText+=e.target.innerText;  
+                    }
+                }
+                break;
             }
-            else if(operatorsArr.indexOf(e.target.id)!=-1){
-                //運算符號
-                idformula+=e.target.id;
-                formula.innerText+= e.target.innerText;
-            }
-            else if(e.target.nodeName=="UL"){
-                //ul 被點到
-                //donothing
-            }
-            else{
-                //數字
-                idformula+=e.target.innerText;
-                formula.innerText+=e.target.innerText;   
-            }
-
         });
-        //判斷哪些位數後不給顯示。
+        //自動加總計算機答案
+        //為result加上逗號
+
 
 
     </script>

@@ -49,10 +49,16 @@ li{
     margin-bottom: 16px;
     text-align: center;
     line-height: 64px;
+    border-radius: 16px;
+}
+li:hover{
+    background-color:#041936;
 }
 li:nth-child(4n+4){
     background: #041936;
-    border-radius: 16px;
+}
+li:nth-child(4n+4):hover{
+    background:#00c4FF
 }
 li:nth-child(n+17){
     color:#00C4FF;

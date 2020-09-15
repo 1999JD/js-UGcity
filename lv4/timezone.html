@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeZone</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="content">
+        <h1 class="title">WORLD CLOCK</h1>
+        <div class="main">
+            <div class="block">
+                <h2 class="zone">
+                    NEW YORK <br><span class="date">27 JAN. 2019</span>
+                </h2>
+                <div class="time">02:46</div>
+            </div>
+            <div class="block">
+                <h2 class="zone">
+                    LONDON <br><span class="date">28 JAN. 2019</span>
+                </h2>
+                <div class="time">07:46</div>
+            </div>
+            <div class="block">
+                <h2 class="zone">
+                    BANGKOK <br><span class="date">28 JAN. 2019</span>
+                </h2>
+                <div class="time">14:46</div>
+            </div>
+            <div class="block">
+                <h2 class="zone">
+                    TAIWAN <br><span class="date">28 JAN. 2019</span>
+                </h2>
+                <div class="time">15:46</div>
+            </div>
+            <div class="block">
+                <h2 class="zone">
+                    SYDNEY <br><span class="date">28 JAN. 2019</span>
+                </h2>
+                <div class="time">18:46</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var zone = document.querySelectorAll('.zone'),
+            date = document.querySelectorAll('.date'),
+            time = document.querySelectorAll('.time');
+        var nowTime = new Date();
+        var nyTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'US/Eastern',hour12:false}),
+            ldTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour12:false}),
+            bkTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Asia/Bangkok',hour12:false}),
+            twTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Asia/Taipei',hour12:false}),
+            snTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Australia/Sydney',hour12:false});
+        var nyDate = nowTime.toLocaleDateString('en-GB',{timeZone:'US/Eastern',day: 'numeric', month:'short',year:'numeric'}),
+            ldDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Europe/London',day: 'numeric', month:'short',year:'numeric'}),
+            bkDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Asia/Bangkok',day: 'numeric', month:'short',year:'numeric'}),
+            twDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Asia/Taipei',day: 'numeric', month:'short',year:'numeric'}),
+            snDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Australia/Sydney',day: 'numeric', month:'short',year:'numeric'});
+        var timeArr=[nyTime,ldTime,bkTime,twTime,snTime],
+            dateArr=[nyDate,ldDate,bkDate,twDate,snDate];
+        // console.log(twTime,twDate);
+        // 23:04:31 15 September 2020
+        //塞到畫面上;
+        for(let i = 0 ;i<timeArr.length;i++){
+            timeArr[i]=timeArr[i].slice(0,5);
+        }
+        for(let i = 0;i<timeArr.length;i++){
+            time[i].innerText = timeArr[i];
+            date[i].innerText = dateArr[i];
+        }
+
+
+
+        
+
+    </script>
+</body>
+</html>
