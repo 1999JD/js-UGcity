@@ -62,9 +62,8 @@
             snDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Australia/Sydney',day: 'numeric', month:'short',year:'numeric'});
         var timeArr=[nyTime,ldTime,bkTime,twTime,snTime],
             dateArr=[nyDate,ldDate,bkDate,twDate,snDate];
-        // console.log(twTime,twDate);
-        // 23:04:31 15 September 2020
-        //塞到畫面上;
+
+        
         for(let i = 0 ;i<timeArr.length;i++){
             timeArr[i]=timeArr[i].slice(0,5);
         }

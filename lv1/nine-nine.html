@@ -52,9 +52,9 @@
         for(let i=2;i<10;i++){
             let titlestr="";
             let formulastr="";
-            titlestr = '<li class="num-title">'+i+'</li>';
+            titlestr = `<li class ="num-title">${i}</li>`;
             for(let j =1; j<10;j++){
-                formulastr += '<li class="formula">'+i+' × '+j+' ＝ '+i*j +'</li>';
+                formulastr += `<li class="formula">${i} x ${j} ＝ ${i*j}`;
             }
             content.innerHTML += open +titlestr + formulastr +end;
         }

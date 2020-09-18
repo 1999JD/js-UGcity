@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <title>js新手地下城第五關-空氣品質指標</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="container mb-40px">
+        <div class="row align-items-end mb-4">
+            <div class="col-12 col-md-4">
+                <h1>空氣品質指標 (AQI)</h1>
+                <select name="select" id="select" onchange="change(this.value)">
+                    <option>請選擇地區</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-8">
+                <table>
+                    <tr>
+                        <td class="green">0～50</td>
+                        <td class="yellow">51～100</td>
+                        <td class="orange">101～150</td>
+                        <td class="red">151～200</td>
+                        <td class="blue">201～300</td>
+                        <td class="purple">301～400</td>
+                    </tr>
+                    <tr>
+                        <td>良好</td>
+                        <td>普通</td>
+                        <td>對敏感族群<br>不健康</td>
+                        <td>對所有族群<br>不健康</td>
+                        <td>非常不健康</td>
+                        <td>危害</td>
+                    </tr>
+                </table>
+            </div>
+            
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="county">高雄市</h2>
+            <div class="dot"></div>
+            <div class="date">2019-01-24 14:00</div><span> 更新</span>
+        </div>
+        <div class="row main">
+            <div class="col-12 col-md-4 detail">
+                <div class="region">
+                    <div class="region-name" id="detail-region-name">前金</div>
+                    <div class="region-aqi" id="detail-region-aqi">156</div>
+                </div>
+                <ul class="region-air" id="detail-region-air">
+                    <li class="o3">
+                        <div>臭氧 <span>O3 (ppb)</span></div>
+                        <span class="num">82</span>
+                    </li>
+                    <li class="pm10">
+                        <div>懸浮微粒 <span>PM10 (μg/m³)</span></div>
+                        <span class="num">72</span>
+                    </li>               
+                    <li class="pm2.5"><div>細懸浮微粒<span>PM2.5 (μg/m³)</span></div>
+                    <span class="num">67</span>
+                    </li>
+                    <li class="co">
+                        <div>一氧化碳<span>CO (ppm)</span></div>
+                        <span class="num">0.49</span>
+                    </li>
+                    <li class="so2">
+                        <div>二氧化硫 <span>SO2 (ppb)</span></div>
+                        <span class="num">3.4</span>
+                    </li>
+                    <li class="no2">
+                        <div>二氧化氮 <span>NO2 (ppb)</span></div>
+                        <span class="num">13</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-8">
+                <ul class="regionList row">
+                    
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="footer text-white">
+        <div class="container  d-flex justify-content-between">
+            <div class="soruce">資料來源：行政院環境保護署</div>
+            <div class="copyright">Copyright © 2019 HexSchool. All rights reserved.</div>
+        </div>
+    </div>
+    <script>
+        var url = "https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json";
+        var data,
+            date = document.querySelector('.date'),
+            county = document.querySelector('.county'),
+            siteName=document.querySelector('#detail-region-name'),
+            aqi=document.querySelector('#detail-region-aqi'),
+            air_num = document.querySelectorAll('.num'),
+            regionList = document.querySelector('.regionList');
+            select = document.querySelector('#select');
+
+        fetch(url, {method:'GET'})
+        .then(res => {
+            return res.json();
+        }).catch(()=>{
+            alert("no connection!");
+        })
+        .then(result => {
+            data = result.records;
+            console.log(data);
+            //select
+            for(let i =0 ;i<data.length;i++){
+                select.innerHTML +=`
+                <option value="${i}">${data[i].SiteName}</option>;
+                `;
+            }
+            county.innerText =data[0].County;
+            date.innerText = data[0].PublishTime;
+            siteName.innerText = data[0].SiteName;
+            aqi.innerText = data[0]['AQI'];
+            air_num[0].innerText = data[0]['O3'];
+            air_num[1].innerText = data[0]['PM10'];
+            air_num[2].innerText = data[0]['PM2.5'];
+            air_num[3].innerText = data[0]['CO'];
+            air_num[4].innerText = data[0]['SO2'];
+            air_num[5].innerText = data[0]['NO2'];
+            for (let i =0;i< data.length;i++){
+                if(data[i].County ===data[0].County){
+                    regionList.innerHTML+=`
+                    <li class="col-md-6 mb-4">
+                        <div class="region">
+                            <div class="region-name">${data[i].SiteName}</div>
+                            <div class="region-aqi">${data[i]['AQI']}</div>
+                        </div>
+                    </li>
+                    `
+                }
+            }
+        })
+        var siteListener = [];
+        //如果被點到就切換哪一個測站
+        function change(value){
+            regionList.innerText = "";
+            county.innerText =data[value].County;
+            date.innerText = data[value].PublishTime;
+            siteName.innerText = data[value].SiteName;
+            aqi.innerText = data[value]['AQI'];
+            air_num[0].innerText = data[value]['O3'];
+            air_num[1].innerText = data[value]['PM10'];
+            air_num[2].innerText = data[value]['PM2.5'];
+            air_num[3].innerText = data[value]['CO'];
+            air_num[4].innerText = data[value]['SO2'];
+            air_num[5].innerText = data[value]['NO2'];
+
+            for(let i =0;i<data.length;i++){
+                if(data[i].County ===data[value].County){
+                    regionList.innerHTML+=`
+                    <li class="col-md-6 mb-4">
+                        <div class="region">
+                            <div class="region-name">${data[i].SiteName}</div>
+                            <div class="region-aqi">${data[i]['AQI']}</div>
+                        </div>
+                    </li>
+                    `
+                }
+            }
+        }
+        
+
+
+
+
+
+
+
+    </script>
+    <!-- source:https://data.gov.tw/dataset/40448; -->
+</body>
+</html>
