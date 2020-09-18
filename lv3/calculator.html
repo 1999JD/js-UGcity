@@ -48,54 +48,56 @@
 
         keyboard.addEventListener('click',function(e){
             let clicked =e.target.id;
-            switch(e.target.nodeName){
-                case "LI":
-                if(specialArr.indexOf(clicked)!=-1){
-                    let last=formula.innerText.length;
-                    switch(clicked){
-                        case "empty":
-                        formula.innerHTML='<span style="visibility: hidden;">0</span>';
-                        idformula="";
-                        result.innerText ="0";
-                        break;
-                        case "delete":
-                        formula.innerText=formula.innerText.slice(0,last-1);
-                        idformula=formula.innerText.slice(0,last-1);
-                        break;
-                        case "equal":
-                        try{
-                            if(operatorsArr.indexOf(idformula.charAt(last-1))!=-1)idformula += "0";
-                            result.innerText=eval(idformula);
-                        }
-                        catch(e){
-                            alert(e);
-                        }
-                        formula.innerHTML='<span style="visibility: hidden;">0</span>';
-                        idformula="";
-                        break;
+            if(e.target.nodeName=="UL")return false;
+            else  if(specialArr.indexOf(clicked)!=-1){
+                let last=idformula.length;
+                switch(clicked){
+                    case "empty":
+                    formula.innerHTML='<span style="visibility: hidden;">0</span>';
+                    idformula="";
+                    result.innerText ="0";
+                    break;
+                    case "delete":
+                    formula.innerText=formula.innerText.slice(0,last-1);
+                    idformula=idformula.slice(0,last-1);
+                    break;
+                    case "equal":
+                    try{
+                        if(operatorsArr.indexOf(idformula.charAt(last-1))!=-1)idformula += "0";
+                        result.innerText=eval(idformula);
                     }
-                }
-                else if(operatorsArr.indexOf(clicked)!=-1){
-                    //運算符號
-                    if(formula.innerText.length>=39)alert('超過可輸入字元');
-                    else{
-                        idformula+=clicked;
-                        formula.innerText+= e.target.innerText;
+                    catch(e){
+                        alert(e);
                     }
+                    formula.innerHTML="";
+                    idformula="";
+                    break;
                 }
+            }
+            else if(operatorsArr.indexOf(clicked)!=-1){
+                //運算符號
+                if(formula.innerText.length>=39)alert('超過可輸入字元');
                 else{
-                    //數字                    
-                    if(formula.innerText.length>=39)alert('超過可輸入字元');
-                    else{
-                        idformula+=clicked;
-                        formula.innerText+=e.target.innerText;  
+                    idformula+=clicked;
+                    formula.innerText+= e.target.innerText;
+                }
+            }
+            else{
+                //數字                    
+                if(formula.innerText.length>=39)alert('超過可輸入字元');
+                else{
+                    idformula+=clicked;
+                    formula.innerText+=e.target.innerText;
+                    try{
+                        if(idformula.length>1 &&idformula.charAt(0)==="0")idformula = idformula.slice(1,idformula.length);
+                        result.innerText=eval(idformula);
+                    }
+                    catch{
+                        return false;
                     }
                 }
-                break;
             }
         });
-        //自動加總計算機答案
-        //為result加上逗號
 
 
 
