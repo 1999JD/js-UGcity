@@ -46,36 +46,30 @@
         </div>
     </div>
     <script>
-        var zone = document.querySelectorAll('.zone'),
-            date = document.querySelectorAll('.date'),
+        var date = document.querySelectorAll('.date'),
             time = document.querySelectorAll('.time');
-        var nowTime = new Date();
-        var nyTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'US/Eastern',hour12:false}),
-            ldTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour12:false}),
-            bkTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Asia/Bangkok',hour12:false}),
-            twTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Asia/Taipei',hour12:false}),
-            snTime = nowTime.toLocaleTimeString('en-GB',{timeZone:'Australia/Sydney',hour12:false});
-        var nyDate = nowTime.toLocaleDateString('en-GB',{timeZone:'US/Eastern',day: 'numeric', month:'short',year:'numeric'}),
-            ldDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Europe/London',day: 'numeric', month:'short',year:'numeric'}),
-            bkDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Asia/Bangkok',day: 'numeric', month:'short',year:'numeric'}),
-            twDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Asia/Taipei',day: 'numeric', month:'short',year:'numeric'}),
-            snDate = nowTime.toLocaleDateString('en-GB',{timeZone:'Australia/Sydney',day: 'numeric', month:'short',year:'numeric'});
+        var nyTime,ldTime,bkTime,twTime,snTime;
+        var nyDate,ldDate,bkDate,twDate,snDate;
         var timeArr=[nyTime,ldTime,bkTime,twTime,snTime],
-            dateArr=[nyDate,ldDate,bkDate,twDate,snDate];
+            dateArr=[nyDate,ldDate,bkDate,twDate,snDate],
+            timeZone =['US/Eastern','Europe/London','Asia/Bangkok','Asia/Taipei','Australia/Sydney'];
+            mon = []
+        var nowTime;
 
-        
-        for(let i = 0 ;i<timeArr.length;i++){
-            timeArr[i]=timeArr[i].slice(0,5);
+        setTimeZone();
+        setInterval(setTimeZone,6000);
+        function setTimeZone(){
+            nowTime = new Date();
+            for(let i = 0 ;i<timeArr.length;i++){
+                timeArr[i] = nowTime.toLocaleTimeString('en-GB',{timeZone:""+timeZone[i],hour12:false});
+                time[i].innerText = timeArr[i].slice(0,5);
+                
+                dateArr[i] = nowTime.toLocaleDateString('en-GB',{timeZone:""+timeZone[i], day:"2-digit", month:'short',year:'numeric'});
+                mon[i] = dateArr[i].slice(3,6);
+                dateArr[i] = dateArr[i].replace(mon[i],mon[i]+".");
+                date[i].innerText = dateArr[i];
+            }
         }
-        for(let i = 0;i<timeArr.length;i++){
-            time[i].innerText = timeArr[i];
-            date[i].innerText = dateArr[i];
-        }
-
-
-
-        
-
     </script>
 </body>
 </html>
