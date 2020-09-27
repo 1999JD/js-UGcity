@@ -1,0 +1,95 @@
+body{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+}
+.controlCol,.adjustPenCol{
+    position:fixed;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.controlCol{
+    top:0;
+    padding: 22px 0;
+    width: 100%;
+}
+.controlCol li+li{
+    padding-left: 44px;
+}
+.controlCol a{
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+.controlCol i{
+    padding-right: 8px;
+}
+.upArrow{
+    position: absolute;
+    background-color: white;
+    top:100%;
+    transform: translateY(-50%);
+    padding:8px 20px;
+    border-radius: 50%;
+}
+.upArrow>i{
+    padding:0;
+    margin-top: 20px;
+}
+.adjustPenCol{
+    bottom:40px;
+    padding:22px 32px 22px 42px;
+    left:50%;
+    transform: translateX(-50%);
+    border-radius: 50px;
+    box-shadow: 0px 4px 16px #00000029;
+}
+.downArrow{
+    position: absolute;
+    bottom:100%;
+    transform: translateY(50%);
+    background-color: white;
+    padding:8px 20px;
+    border-radius: 50%;
+}
+.downArrow>i{
+    padding:0;
+    margin-bottom: 20px;
+}
+.sizeCol,.colorCol{
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+}
+.fa-paint-brush{
+    font-size: 42px;
+}
+select{
+    margin-left: 16px;
+    margin-right: 8px;
+    border-radius: 24px;
+    width: 74px;
+    height: 48px;
+    background: #E8E8E8;
+    font-size: 20px;
+    padding-left: 30px;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    border: none;
+}
+.color{
+    width: 48px;
+    height: 48px;
+    border:2px solid black;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 8px;
+}
+.color:first-child{
+    margin-left: 16px;
+}
+#canvas{
+    background-color: #E8E8E8;
+}
