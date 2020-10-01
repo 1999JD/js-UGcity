@@ -1,0 +1,227 @@
+*{
+    box-sizing: border-box;
+}
+body{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Roboto Condensed', sans-serif;
+    background-color: black;
+}
+.field{
+    width:540px;
+    height: 540px;
+}
+
+.start-content{
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    color:white;
+    font-size: 100px;
+    font-style: italic;
+    justify-content: space-between;
+}
+.start-content>li{
+    width:160px;
+    height: 160px;
+    box-sizing: border-box;
+    padding: 30px 0;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.btn{
+    width: 100%;
+    text-align: center;
+    font-size: 48px;
+    padding:20px 0;
+    cursor: pointer;
+    border:0;
+    border-radius: 8px;
+}
+.start-btn{
+    color:#FF6D70;
+}
+
+.solidcircle,.emptycircle,.emptycircle::before{
+    margin: 0 auto;
+    border-radius: 50%;
+    border:4px solid #ED494C;
+}
+.emptycircle::before,.solidcross::before,.solidcross::after,
+.emptycross::before,.emptycross::after,.cover,.cover::after{
+    content:"";
+    position: absolute;
+    top:0px;
+    bottom:0;
+    left:0;
+    right:0;
+    margin:auto;
+}
+.emptycircle,.solidcross,.emptycross{
+    position: relative;
+}
+.solidcircle{
+    width: 100px;
+    height: 100px;
+    border: 15px solid #ED494C;
+}
+.emptycircle{
+    width:120px;
+    height: 120px;
+}
+.emptycircle::before{
+    width:80px;
+    height:80px;
+}
+.solidcross::before,.solidcross::after,
+.emptycross::before,.emptycross::after{
+    width:18px;
+    height: 160px;
+}
+.solidcross::before,.solidcross::after{
+    background-color: #ED494C;
+}
+.emptycross::before,.emptycross::after{
+    border:4px solid white;
+}
+.solidcross::before,.emptycross::before{
+    transform: rotate(45deg);
+}
+.solidcross::after,.emptycross::after,.cover{ 
+    transform: rotate(-45deg);
+}
+.cover,.cover::after{
+    width: 17px;
+    height: 28px;
+    background-color: black;
+    z-index:2;
+}
+.cover::after{
+    transform: rotate(-90deg);
+}
+.game-scoreboard{
+    font-size: 48px;
+    margin-top: 9px;
+    display: flex;
+    text-align: center;
+    align-items: flex-end
+}
+.game-scoreboard-player{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.game-round{
+    font-size: 20px;
+    line-height: 24px;
+    color:white;
+    width: 100%;
+}
+.icon{
+    background-color: blue;
+    padding: 2px 0 6px;
+    width: 64px;
+    border:4px solid black;
+    color: white;
+}
+.iconx{
+    border-radius: 8px 0px 0px 8px;
+    background-color: #ED494C;
+}
+.icono{
+    border-radius: 0px 8px 8px 0px;
+    background-color: black;
+}
+.player{
+    width: 171px;
+    line-height: 56px;
+    background:white;
+    border-top: 4px solid black;
+    border-bottom: 4px solid black;
+}
+.vs{
+    width: 70px;
+    font-size: 20px;
+    padding: 24px;
+    background:black;
+    border-radius: 8px 8px 0px 0px;
+    color: white;
+}
+.game-field{
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 94px;
+    color: white;
+}
+.game-field>li{
+    width: 180px;
+    height: 180px;
+    box-sizing: border-box;
+    border-bottom: 4px solid #ED494C;
+    padding: 47px;
+    cursor: pointer;
+}
+.game-field>li:hover{
+    background-color: #ED494C;
+}
+.game-field>li:nth-child(3n+1),.game-field>li:nth-child(3n+2){
+    border-right: 4px solid #ED494C;
+}
+.game-field>li:nth-child(n+7){
+    border-bottom:none
+}
+.game-btn{
+    background-color: #ED494C;
+    color:white;
+}
+.game-winner{
+    font-size: 400px;
+    color:#ED494C;
+    text-align: center;
+    line-height: 540px;
+    position: relative;
+}
+.game-winner::after{
+    content: "WINNER!";
+    position: absolute;
+    font-style: italic;
+    font-size: 154px;
+    color:#FF6D70;
+    -webkit-text-stroke: 2px #fff;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin:auto;
+}
+.game-draw{
+    font-size: 200px;
+    color:#ED494C;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.game-draw>.fa-times{
+    font-size: 250px;
+}
+.game-draw::after{
+    content:"DRAW! \A DRAW! \A DRAW!";
+    position: absolute;
+    font-size: 154px;
+    font-style: italic;
+    color:#FF6D70;
+    -webkit-text-stroke: 2px #fff;
+    text-align: center;
+}
+
+.d-n{
+    display: none;
+}
+.text-align-right{
+    text-align: right;
+}

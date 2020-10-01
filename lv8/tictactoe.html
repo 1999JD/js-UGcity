@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js新手地下城第七關-canvas繪圖板</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="style.css">
+    <script src='https://kit.fontawesome.com/8e7fb7d8d3.js' crossorigin='anonymous'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="start" :class="{'d-n':start}">
+            <ul class="start-content field">
+                <li>TIC</li>
+                <li><div class="solidcircle"></div></li>
+                <li class="emptycross"><div class="cover"></div></li>
+                <li class="solidcross"></li>
+                <li>TAC</li>
+                <li><div class="emptycircle"></div></li>
+                <li><div class="emptycircle"></div></li>
+                <li class="solidcross"></li>
+                <li>TOE</li>
+            </ul>
+            <input type="button" class="btn start-btn" value="START" @click="setGame">
+        </div>
+        <div class="game" :class="{'d-n':game}">
+            <div class="game-scoreboard">
+                <div class="game-scoreboard-player">
+                    <span class="icon iconx"><i class="fas fa-times"></i></span>
+                    <span class="player playerx" v-text="scorex">10</span>
+                </div>
+                <span class="vs">VS</span>
+                <div class="game-scoreboard-player playery">
+                    <span class="player playero" v-text="scoreo">8</span>
+                    <span class="icon icono"><i class="far fa-circle"></i></span>
+                </div>
+            </div>
+            <span class="game-round" :class="{'text-align-right':oturn}">YOUR TURN!</span>
+            <ul class="game-field field ":class="{'d-n':gamefield}" @click="gamecontroller($event)">
+                <li v-for="index in 9" :value="index"></li>
+            </ul>
+            <div class="game-winner winnerx field" :class="{'d-n':owin}"><i class="far fa-circle"></i></div>
+            <div class="game-winner winnero field" :class="{'d-n':xwin}"><i class="fas fa-times"></i></div>
+            <div class="game-draw field" :class="{'d-n':draw}"><i class="far fa-circle"></i><i class="fas fa-times"></i></div>
+            <input type="button" class="btn game-btn" value="RESTART" @click = "restart">
+        </div>
+    </div>
+      <script>
+          var vm = new Vue({
+            el : "#app",
+            data :{
+                scoreo:0,
+                scorex:0,
+                round:0,//first:0,second:1
+                oturn:true,
+                start:false,
+                game:true,
+                gamefield:true,
+                owin:true,
+                xwin:true,
+                draw:true,
+                isSet:[2,2,2, 2,2,2, 2,2,2],
+                successCondition:[
+                    [1,2,3],[4,5,6],[7,8,9],
+                    [1,4,7],[2,5,8],[3,6,9],
+                    [1,5,9],[3,5,7]
+                ],
+            },
+            methods:{
+                restart:function(){
+                    document.querySelector('body').style.background='black';
+                    this.scoreo = 0;
+                    this.scorex = 0;
+                    this.round = 0;
+                    this.start = false;
+                    this.game=true;
+                    this.gamefthisield=true;
+                    this.owin=true;
+                    this.xwin=true;
+                    this.draw=true;
+                    this.isSet=[2,2,2, 2,2,2, 2,2,2];
+                    var nestedLis = document.querySelectorAll('.game-field > li');
+                    [].forEach.call(nestedLis, function (li) {
+                        li.innerHTML = "";
+                    });
+                },
+                setGame:function(){
+                    document.querySelector('body').style.background='#FF6D70';
+                    this.start=true;
+                    this.game=false;
+                    this.gamefield=false;
+                },
+                gamecontroller:function(e){
+                    let clicked = e.target.value;
+                    if(this.isSet[clicked-1] ==2 && this.round==0){
+                        e.target.innerHTML=`<i class="far fa-circle"></i>`;
+                        this.scoreo+=1;
+                        this.isSet[clicked- 1] =0;
+                        this.round = 1;
+                        this.oturn=false;
+                    }
+                    else if(this.isSet[clicked-1] ==2 && this.round == 1){
+                        e.target.innerHTML=`<i class="fas fa-times"></i>`;
+                        this.scorex+=1;
+                        this.isSet[clicked- 1] = 1;
+                        this.round = 0;
+                        this.oturn=true;
+                    }
+                    this.judge(clicked);
+                },
+                judge:function(pos){
+                    let success = this.successCondition;
+                    success.forEach((item,index) => {
+                        if(item.indexOf(pos)!=-1){
+                            let judgeArr = [this.isSet[item[0]-1],this.isSet[item[1]-1],this.isSet[item[2]-1]];
+                            let count=0;
+                            judgeArr.forEach((value)=>{
+                                if(value==this.isSet[pos-1]) count++
+                            })
+                            if(count===judgeArr.length){
+                                this.gamefield=true;
+                                switch(this.isSet[pos-1]){
+                                    case 0: 
+                                    this.owin = false;
+                                    break;
+                                    case 1:
+                                    this.xwin = false;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+                    if(this.scoreo==5 && this.scorex==4 && this.owin==true && this.xwin==true){
+                        this.gamefield=true;
+                        this.draw =false;
+                    }
+                }
+            }
+        })
+
+      </script>
+
+</body>
+</html>
