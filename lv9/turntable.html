@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js新手地下城第九關-輪盤</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="style.css">
+    <link  rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .anim{
+            transition-timing-function: Ease-in-out;
+            transition: transform 3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <ul class="turntable">
+            <li v-for="(name,nid) in names">
+                <div class="inner">
+                    <div class="prizeitem">
+                        <i class="material-icons">{{iconsClass[nid]}}</i>
+                        <span>
+                            {{name}}
+                        </span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="btn" @click="startRotate($event)">Press
+            <div class="btn-hand"></div>
+        </div>
+        <i class="material-icons"></i>
+
+    </div>
+    <script>
+        // 用jsonp接資料
+        // 轉的次數:20 用加的
+        // js程式裡，生成20陣列，內容物 即代表機率 
+        // 判斷：測試一千次?
+        // 跑程式，挑中後，再旋轉到被挑的東西上面?、只能轉20次
+        // 計算東西在什麼地方
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                iconsClass:['movie_filter','cake','stars',
+                'child_care','flight','wifi'],
+                names:['Movie','Wish','Anything','Child','Flight','Wifi'],
+            },
+            computed:{
+
+            },
+            methods:{
+                startRotate:function(e){
+                    console.log(e);
+                    e.stopPropagation();
+                    let angle = 720+30
+                    e.target.classList.add('anim');
+                    e.target.style.transform=`rotate(${angle}deg)`;
+
+
+                },
+                shuffle:function(arr){
+                    for (let i = arr.length - 1; i > 0; i--) {
+                        let j = Math.floor(Math.random() * (i + 1));
+                        [arr[i], arr[j]] = [arr[j], arr[i]];
+                    }
+                }
+            }
+        });
+        
+    </script>
+</body>
+
+</html>

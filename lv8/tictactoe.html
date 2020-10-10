@@ -13,7 +13,7 @@
 </head>
 <body>
     <div id="app">
-        <div class="start" :class="{'d-n':start}">
+        <div class="start" v-show="start">
             <ul class="start-content field">
                 <li>TIC</li>
                 <li><div class="solidcircle"></div></li>
@@ -27,25 +27,25 @@
             </ul>
             <input type="button" class="btn start-btn" value="START" @click="setGame">
         </div>
-        <div class="game" :class="{'d-n':game}">
-            <div class="game-scoreboard">
-                <div class="game-scoreboard-player">
-                    <span class="icon iconx"><i class="fas fa-times"></i></span>
-                    <span class="player playerx" v-text="scorex">10</span>
+        <div class="game" v-show="game">
+                <div class="game-scoreboard">
+                    <div class="game-scoreboard-player">
+                        <span class="icon iconx"><i class="fas fa-times"></i></span>
+                        <span class="player playerx" v-text="scorex">10</span>
+                    </div>
+                    <span class="vs">VS</span>
+                    <div class="game-scoreboard-player playery">
+                        <span class="player playero" v-text="scoreo">8</span>
+                        <span class="icon icono"><i class="far fa-circle"></i></span>
+                    </div>
                 </div>
-                <span class="vs">VS</span>
-                <div class="game-scoreboard-player playery">
-                    <span class="player playero" v-text="scoreo">8</span>
-                    <span class="icon icono"><i class="far fa-circle"></i></span>
-                </div>
-            </div>
-            <span class="game-round" :class="{'text-align-right':oturn}">YOUR TURN!</span>
-            <ul class="game-field field ":class="{'d-n':gamefield}" @click="gamecontroller($event)">
-                <li v-for="index in 9" :value="index"></li>
-            </ul>
-            <div class="game-winner winnerx field" :class="{'d-n':owin}"><i class="far fa-circle"></i></div>
-            <div class="game-winner winnero field" :class="{'d-n':xwin}"><i class="fas fa-times"></i></div>
-            <div class="game-draw field" :class="{'d-n':draw}"><i class="far fa-circle"></i><i class="fas fa-times"></i></div>
+                <div class="game-round" :class="{'text-align-right':oturn}">YOUR TURN!</div>
+                <ul class="game-field field " v-show="gamefield" @click="gamecontroller($event)">
+                    <li v-for="index in 9" :value="index"></li>
+                </ul>
+            <div class="game-winner winnerx field"  v-show="xwin"><i class="far fa-circle"></i></div>
+            <div class="game-winner winnero field"  v-show="owin"><i class="fas fa-times"></i></div>
+            <div class="game-draw field"  v-show="draw"><i class="far fa-circle"></i><i class="fas fa-times"></i></div>
             <input type="button" class="btn game-btn" value="RESTART" @click = "restart">
         </div>
     </div>
@@ -57,12 +57,12 @@
                 scorex:0,
                 round:0,//first:0,second:1
                 oturn:true,
-                start:false,
-                game:true,
-                gamefield:true,
-                owin:true,
-                xwin:true,
-                draw:true,
+                start:true,
+                game:false,
+                gamefield:false,
+                owin:false,
+                xwin:false,
+                draw:false,
                 isSet:[2,2,2, 2,2,2, 2,2,2],
                 successCondition:[
                     [1,2,3],[4,5,6],[7,8,9],
@@ -76,12 +76,12 @@
                     this.scoreo = 0;
                     this.scorex = 0;
                     this.round = 0;
-                    this.start = false;
-                    this.game=true;
-                    this.gamefthisield=true;
-                    this.owin=true;
-                    this.xwin=true;
-                    this.draw=true;
+                    this.start = true;
+                    this.game= false;
+                    this.gamefthisield=false;
+                    this.owin=false;
+                    this.xwin=false;
+                    this.draw=false;
                     this.isSet=[2,2,2, 2,2,2, 2,2,2];
                     var nestedLis = document.querySelectorAll('.game-field > li');
                     [].forEach.call(nestedLis, function (li) {
@@ -90,9 +90,9 @@
                 },
                 setGame:function(){
                     document.querySelector('body').style.background='#FF6D70';
-                    this.start=true;
-                    this.game=false;
-                    this.gamefield=false;
+                    this.start=false;
+                    this.game= true;
+                    this.gamefield=true;
                 },
                 gamecontroller:function(e){
                     let clicked = e.target.value;
@@ -122,21 +122,21 @@
                                 if(value==this.isSet[pos-1]) count++
                             })
                             if(count===judgeArr.length){
-                                this.gamefield=true;
+                                this.gamefield = false;
                                 switch(this.isSet[pos-1]){
                                     case 0: 
-                                    this.owin = false;
+                                    this.xwin = true;
                                     break;
                                     case 1:
-                                    this.xwin = false;
+                                    this.owin = true;
                                     break;
                                 }
                             }
                         }
                     });
-                    if(this.scoreo==5 && this.scorex==4 && this.owin==true && this.xwin==true){
-                        this.gamefield=true;
-                        this.draw =false;
+                    if(this.scoreo==5 && this.scorex==4 && this.owin==false && this.xwin==false){
+                        this.gamefield=false;
+                        this.draw = true;
                     }
                 }
             }

@@ -1,0 +1,36 @@
+{
+    "prizes":[
+        {
+            "prizeName": "Movie",
+            "amount": 1,
+            "iconClass": "movie_filter"
+        },
+        {
+            "prizeName": "Wish",
+            "amount": 5,
+            "iconClass": "cake"
+        },
+        {
+            "prizeName": "Anything",
+            "amount": 5,
+            "iconClass": "stars"
+        },
+
+        {
+            "prizeName": "Child",
+            "amount": 4,
+            "iconClass": "child_care"
+        },
+        {
+            "prizeName": "Flight",
+            "amount": 1,
+            "iconClass": "flight"
+        },
+        {
+            "prizeName": "Wifi",
+            "amount": 5,
+            "iconClass": "wifi"
+        }
+
+    ]
+}
