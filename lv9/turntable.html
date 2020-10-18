@@ -5,14 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>js新手地下城第九關-輪盤</title>
-    <link rel="stylesheet" href="../reset.css">
-    <link rel="stylesheet" href="style.css">
-    <link  rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./reset.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./style.css">
+    <script type="text/javascript" src="prize.json"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <style>
-        .anim{
+        .anim {
             transition-timing-function: Ease-in-out;
-            transition: transform 3s;
+            transition: transform 2s;
+        }
+        .choicedStyle {
+            color: white !important;
+            background: #FF00BA !important;
+        }
+        .icons {
+            position: absolute;
+            overflow: hidden;
+            z-index: -1;
+            color: #1F1172;
+            /* font-size: 40px; */
+        }
+        .md-46 {
+            font-size: 46px;
         }
     </style>
 </head>
@@ -20,12 +35,15 @@
 <body>
     <div id="app">
         <ul class="turntable">
-            <li v-for="(name,nid) in names">
-                <div class="inner">
+            <li v-for="(name,nid) in names" :style="eachRotDeg[nid]">
+                <div class="inner" :style="eachPercent[nid]">
                     <div class="prizeitem">
-                        <i class="material-icons">{{iconsClass[nid]}}</i>
+                        <i class="material-icons md-36">{{iconsClass[nid]}}</i>
                         <span>
                             {{name}}
+                        </span>
+                        <span>
+                            ({{eachAmount[nid]}})
                         </span>
                     </div>
                 </div>
@@ -34,45 +52,145 @@
         <div class="btn" @click="startRotate($event)">Press
             <div class="btn-hand"></div>
         </div>
-        <i class="material-icons"></i>
-
+        <div class="streamer" v-if="getPrize">
+            <div class="icons" v-for="i in 15" :style="iconPosition(i)">
+                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
+            </div>
+            <div class="icons" style="left:10px">
+                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
+            </div>
+            <div class="icons" style="right:10px">
+                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
+            </div>
+            <h2 class="left">WELL<br>DONE!</h2>
+            <div class="center"></div>
+            <div class="right">
+                <p>YOU GET A FREE...</p>
+                <span class="choicedPrizeName">{{names[nowPrizeId]}}</span>
+            </div>
+        </div>
     </div>
     <script>
-        // 用jsonp接資料
-        // 轉的次數:20 用加的
-        // js程式裡，生成20陣列，內容物 即代表機率 
-        // 判斷：測試一千次?
-        // 跑程式，挑中後，再旋轉到被挑的東西上面?、只能轉20次
-        // 計算東西在什麼地方
+        var prizes;
+        var res;
         var vm = new Vue({
-            el:"#app",
-            data:{
-                iconsClass:['movie_filter','cake','stars',
-                'child_care','flight','wifi'],
-                names:['Movie','Wish','Anything','Child','Flight','Wifi'],
+            el: "#app",
+            data: {
+                pdata: [],
+                names: [],
+                eachAmount: [],
+                iconsClass: [],
+                angle: 0,
+                eachRotDeg: [],
+                eachPercent: [],
+                totalItems: [],
+                totalChoicedID: 0,
+                nowPrizeId: 0,
+                getPrize: false,
             },
-            computed:{
-
-            },
-            methods:{
-                startRotate:function(e){
-                    console.log(e);
-                    e.stopPropagation();
-                    let angle = 720+30
-                    e.target.classList.add('anim');
-                    e.target.style.transform=`rotate(${angle}deg)`;
-
+            methods: {
+                iconPosition: function (i) {
+                    if (i % 2 === 0) {
+                        return {
+                            top: -Math.floor(Math.random() * 30) + 'px',
+                            left: i * 70 + 'px',
+                            transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
+                        }
+                    }
+                    else {
+                        return {
+                            bottom: -Math.floor(Math.random() * 30) + 'px',
+                            left: i * 70 + Math.floor(Math.random() * i) + 'px',
+                            transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
+                        }
+                    }
 
                 },
-                shuffle:function(arr){
-                    for (let i = arr.length - 1; i > 0; i--) {
-                        let j = Math.floor(Math.random() * (i + 1));
-                        [arr[i], arr[j]] = [arr[j], arr[i]];
+                getJsonData: function () {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('get', "./prize.json");
+                    xhr.send();
+                    xhr.onload = function () {
+                        let res = JSON.parse(xhr.responseText);
+                        vm.pdata = res[0].prizes;
+                        vm.names = vm.pdata.map((item) => item.prizeName);
+                        vm.iconsClass = vm.pdata.map((item) => item.iconClass);
+                        vm.eachAmount = vm.pdata.map((item) => item.amount);
+                        vm.pdata.forEach((item, pid) => {
+                            vm.eachRotDeg.push({
+                                transform: 'rotate(' + (360 / vm.pdata.length) * pid + 'deg)',
+                            });
+                            vm.eachPercent.push({
+                                transform: 'rotate(' + (360 / vm.pdata.length) + 'deg)',
+                            });
+                            for (let i = 0; i < item.amount; i++) {
+                                vm.totalItems.push(item.prizeName);
+                            }
+                        });
+                    }
+                },
+                startRotate: function (e) {
+                    if (this.totalItems.length < 20) {
+                        let allLi = document.querySelectorAll(".inner");
+                        allLi[this.nowPrizeId].classList.remove('choicedStyle');
+                        this.reduceItem();
+                        this.getPrize = false;
+                    }
+                    e.target.classList.remove('anim');
+                    this.angle = this.angle - 720;
+                    e.target.style.transform = `rotate(${this.angle}deg)`;
+                    this.totalChoicedID = Math.floor(Math.random() * (this.totalItems.length));
+                    this.nowPrizeId = vm.names.indexOf(this.totalItems[this.totalChoicedID])
+                    console.log(this.totalItems[this.totalChoicedID]);
+                    console.log(vm.names.indexOf(this.totalItems[this.totalChoicedID]));
+                    setTimeout(function () {
+                        vm.angle = 720 + (360 / vm.names.length) * vm.nowPrizeId;
+                        e.target.classList.add('anim');
+                        e.target.style.transform = `rotate(${vm.angle}deg)`;
+                        setTimeout(vm.afterAnim, 2500);
+                    }, 10);
+                },
+                afterAnim: function () {
+                    //改變顏色
+                    let allLi = document.querySelectorAll(".inner");
+                    allLi[this.nowPrizeId].classList.add('choicedStyle');
+                    //背景
+                    this.getPrize = true;
+                    // 減掉數值vm.$set(array, index, value)
+                    this.$set(this.eachAmount, this.nowPrizeId, this.eachAmount[this.nowPrizeId] - 1);
+                    this.totalItems.splice(this.totalChoicedID, 1);
+
+                },
+                reduceItem: function () {
+                    if (this.eachAmount[this.nowPrizeId] == 0) {
+                        this.names.splice(this.nowPrizeId, 1);
+                        this.eachAmount.splice(this.nowPrizeId, 1);
+                        this.iconsClass.splice(this.nowPrizeId, 1);
+                        vm.eachRotDeg = [];
+                        vm.eachPercent = [];
+                        vm.names.forEach((item, nid) => {
+                            vm.eachRotDeg.push({
+                                transform: 'rotate(' + (360 / vm.names.length) * nid + 'deg)',
+                            });
+                            vm.eachPercent.push({
+                                transform: 'rotate(' + (360 / vm.names.length) + 'deg)',
+                            })
+                        });
+                        if (vm.names.length % 2 === 1) {
+                            let lastLi = document.querySelector(`li:nth-child(${vm.names.length})>.inner`);
+                            lastLi.style.background = "rgb(0, 16, 151)";
+                            lastLi.style.color = "white";
+                        }
+                        if (vm.names.length === 1) {
+                            document.querySelector('li').style.clipPath = "none";
+                            document.querySelector('.inner').style.width = "100%";
+                        }
                     }
                 }
+
             }
         });
-        
+        vm.getJsonData();
     </script>
 </body>
 
