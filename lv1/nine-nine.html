@@ -46,17 +46,16 @@
         </div>
     </div>
     <script>
-        var content = document.querySelector('.content');
-        var open='<ul class="card">';
-        var end='</ul>'
+        var content = document.querySelector('.main');
+        var ulTag='<ul class="card">';
+        var ulTagEnd='</ul>'
         for(let i=2;i<10;i++){
-            let titlestr="";
-            let formulastr="";
-            titlestr = `<li class ="num-title">${i}</li>`;
+            let formula="";
+            let title = `<li class ="num-title">${i}</li>`;
             for(let j =1; j<10;j++){
-                formulastr += `<li class="formula">${i} x ${j} ＝ ${i*j}`;
+                formula += `<li class="formula">${i} x ${j} ＝ ${i*j}`;
             }
-            content.innerHTML += open +titlestr + formulastr +end;
+            content.innerHTML += ulTag +title + formula +ulTagEnd;
         }
     </script>
 </body>
