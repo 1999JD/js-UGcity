@@ -41,10 +41,6 @@
         </ul>
     </div>
     <script>
-        // 條件：
-
-        // 運算符號不可相連：如果相連，則去除掉前面那一個(輸入時判斷)
-
         let keyboard = document.querySelector('.keyboard');
         let keyings = {
             specialsArr: ["zero", "delete", "equal"],
@@ -56,29 +52,17 @@
             formulaId = "";
         let result = document.querySelector('.result');
 
-
-
-        // clickedId= clickedId.replace(/[^\d\+\-\*\/\.]/,"");
         keyboard.addEventListener('click', function (e) {
             clicked = e.target;
             if (e.target.nodeName != "LI") return;
             //檢查是哪個物件的成員
             for (keying in keyings) {
                 if (keyings[keying].indexOf(clicked.id) == -1) continue;
-                switch (keying) {
-                    case "specialsArr":
-                        dealSpecialsKeying(keying, clicked);
-                        break;
-                    case "operatorsArr":
-                        dealOPeratorsKeying(keying, clicked);
-                        break;
-                    case "numsArr":
-                        dealNumsKeying(keying, clicked);
-                        break;
-                }
+                keying=keying.slice(0,-3);
+                eval(keying+"KeyHandle(keying,clicked)");
             }
         });
-        let dealSpecialsKeying = function (keying, clicked) {
+        let specialsKeyHandle = function (keying, clicked) {
             console.log(clicked.id);
             switch (clicked.id) {
                 case "zero":
@@ -97,7 +81,7 @@
                     break;
             }
         };
-        let dealOPeratorsKeying = function (keying, clicked) {
+        let operatorsKeyHandle = function (keying, clicked) {
             if (formulaObj.innerText.length >= 39) return;
             // 第一個不可為運算符號：如果為運算符號，則加上0
             if (formulaId.length == 0 || formulaObj.innerText.length == 0) {
@@ -112,7 +96,7 @@
             formulaId += clicked.id;
             formulaObj.innerText += clicked.innerText;
         };
-        let dealNumsKeying = function (keying, clicked) {
+        let numsKeyHandle = function (keying, clicked) {
             if (formulaObj.innerText.length >= 39) return;
             formulaId += clicked.id;
             formulaObj.innerText += clicked.innerText;
