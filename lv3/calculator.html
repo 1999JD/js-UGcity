@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../reset.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="calculator">
         <div class="screen">
@@ -33,75 +35,109 @@
             <li id="00">00</li>
             <li id=".">.</li>
             <li id="-">-</li>
-            <li id="empty">AC</li>
+            <li id="zero">AC</li>
             <li id="delete">⌫</li>
             <li id="equal">=</li>
         </ul>
     </div>
     <script>
-        var keyboard = document.querySelector('.keyboard');
-        var specialArr=["empty","delete","equal"];
-        var operatorsArr=["+","-","*","/","."];
-        var formula = document.querySelector('.formula');
-        var idformula="";
-        var result = document.querySelector('.result');
+        // 條件：
 
-        keyboard.addEventListener('click',function(e){
-            let clicked =e.target.id;
-            if(e.target.nodeName=="UL")return false;
-            else  if(specialArr.indexOf(clicked)!=-1){
-                let last=idformula.length;
-                switch(clicked){
-                    case "empty":
-                    formula.innerHTML='<span style="visibility: hidden;">0</span>';
-                    idformula="";
-                    result.innerText ="0";
-                    break;
-                    case "delete":
-                    formula.innerText=formula.innerText.slice(0,last-1);
-                    idformula=idformula.slice(0,last-1);
-                    break;
-                    case "equal":
-                    try{
-                        if(operatorsArr.indexOf(idformula.charAt(last-1))!=-1)idformula += "0";
-                        result.innerText=eval(idformula);
-                    }
-                    catch(e){
-                        alert(e);
-                    }
-                    formula.innerHTML="";
-                    idformula="";
-                    break;
-                }
-            }
-            else if(operatorsArr.indexOf(clicked)!=-1){
-                //運算符號
-                if(formula.innerText.length>=39)alert('超過可輸入字元');
-                else{
-                    idformula+=clicked;
-                    formula.innerText+= e.target.innerText;
-                }
-            }
-            else{
-                //數字                    
-                if(formula.innerText.length>=39)alert('超過可輸入字元');
-                else{
-                    idformula+=clicked;
-                    formula.innerText+=e.target.innerText;
-                    try{
-                        if(idformula.length>1 &&idformula.charAt(0)==="0")idformula = idformula.slice(1,idformula.length);
-                        result.innerText=eval(idformula);
-                    }
-                    catch{
-                        return false;
-                    }
+        // 運算符號不可相連：如果相連，則去除掉前面那一個(輸入時判斷)
+
+        let keyboard = document.querySelector('.keyboard');
+        let keyings = {
+            specialsArr: ["zero", "delete", "equal"],
+            operatorsArr: ["+", "-", "*", "/", "."],
+            numsArr: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "00"],
+        }
+        let clicked;
+        let formulaObj = document.querySelector('.formula'),
+            formulaId = "";
+        let result = document.querySelector('.result');
+
+
+
+        // clickedId= clickedId.replace(/[^\d\+\-\*\/\.]/,"");
+        keyboard.addEventListener('click', function (e) {
+            clicked = e.target;
+            if (e.target.nodeName != "LI") return;
+            //檢查是哪個物件的成員
+            for (keying in keyings) {
+                if (keyings[keying].indexOf(clicked.id) == -1) continue;
+                switch (keying) {
+                    case "specialsArr":
+                        dealSpecialsKeying(keying, clicked);
+                        break;
+                    case "operatorsArr":
+                        dealOPeratorsKeying(keying, clicked);
+                        break;
+                    case "numsArr":
+                        dealNumsKeying(keying, clicked);
+                        break;
                 }
             }
         });
+        let dealSpecialsKeying = function (keying, clicked) {
+            console.log(clicked.id);
+            switch (clicked.id) {
+                case "zero":
+                    formulaObj.innerHTML = '<span style="visibility: hidden;">0</span>';
+                    formulaId = "";
+                    result.innerText = "0";
+                    break;
+                case "delete":
+                    formulaObj.innerText = formulaObj.innerText.slice(0, formulaObj.innerText.length -1);
+                    formulaId = formulaId.slice(0, formulaId.length - 1);
+                    break;
+                case "equal":
+                    calculate();
+                    formulaObj.innerText = "";
+                    formulaId = "";
+                    break;
+            }
+        };
+        let dealOPeratorsKeying = function (keying, clicked) {
+            if (formulaObj.innerText.length >= 39) return;
+            // 第一個不可為運算符號：如果為運算符號，則加上0
+            if (formulaId.length == 0 || formulaObj.innerText.length == 0) {
+                formulaId += 0;
+                formulaObj.innerText += 0;
+            }
+            // 符號相連，去掉前一個符號
+            if (keyings.operatorsArr.indexOf(formulaId.charAt(formulaId.length - 1)) != -1) {
+                formulaId = formulaId.slice(0, formulaId.length - 1);
+                formulaObj.innerText = formulaObj.innerText.slice(0, formulaObj.innerText.length - 1);
+            }
+            formulaId += clicked.id;
+            formulaObj.innerText += clicked.innerText;
+        };
+        let dealNumsKeying = function (keying, clicked) {
+            if (formulaObj.innerText.length >= 39) return;
+            formulaId += clicked.id;
+            formulaObj.innerText += clicked.innerText;
+            calculate();
+        };
+        let calculate = function () {
+            try {
+                //如果最後一個為運算符號，則加上0
+                if (keyings.operatorsArr.indexOf(formulaId.charAt(formulaId.length - 1)) != -1) formulaId += "0";
+                result.innerText = eval(formulaId);
+                console.log(result.innerText);
+            }
+            catch(e) {
+                return alert(e);
+            }
+        }
+
+
+
+
 
 
 
     </script>
-    
+
 </body>
+
 </html>

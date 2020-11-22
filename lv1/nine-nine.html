@@ -46,7 +46,7 @@
         </div>
     </div>
     <script>
-        var content = document.querySelector('.main');
+        var main = document.querySelector('.main');
         var ulTag='<ul class="card">';
         var ulTagEnd='</ul>'
         for(let i=2;i<10;i++){
@@ -55,7 +55,7 @@
             for(let j =1; j<10;j++){
                 formula += `<li class="formula">${i} x ${j} ＝ ${i*j}`;
             }
-            content.innerHTML += ulTag +title + formula +ulTagEnd;
+            main.innerHTML += ulTag +title + formula +ulTagEnd;
         }
     </script>
 </body>
