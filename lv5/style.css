@@ -39,11 +39,11 @@ h2{
     height:0px;
     border-top: 3px dotted black;
 }
-.region{
+.choiced-site,.region{
     display: flex;
     width: 100%;
 }
-.region-name{
+.choiced-site-name,.region-name{
     font-size: 36px;
     line-height: 54px;
     width: 56%;
@@ -51,7 +51,7 @@ h2{
     text-align: center;
     border:3px solid black;
 }
-.region-aqi{
+.choiced-site-aqi,.region-aqi{
     width:46%;
     font-size: 48px;
     padding:16px 0;
@@ -61,17 +61,17 @@ h2{
     border:3px solid black;
     border-left:0;
 }
-.region-air{
+.choiced-site-air{
     padding:14px 30px;
     border: black 3px solid;
     border-top: 0;
 }
-.region-air>li{
+.choiced-site-air>li{
     padding:16px 0;
     display: flex;
     justify-content: space-between;
 }
-.region-air>li+li{
+.choiced-site-air>li+li{
     border-top: 3px solid black;
 }
 .mb-40px{
