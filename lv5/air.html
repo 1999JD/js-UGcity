@@ -47,7 +47,7 @@
 
         </div>
         <div class="d-flex justify-content-between align-items-center mb-4" id="choicedCity">
-            <h2 class="county" :v-bind="siteInfo">{{siteInfo[choicedSiteId].County}}</h2>
+            <h2 class="county">{{siteInfo[choicedSiteId].County}}</h2>
             <div class="dot"></div>
             <div class="date">{{siteInfo[choicedSiteId].PublishTime}}</div><span> 更新</span>
         </div>
@@ -128,8 +128,10 @@
             },
             created: function () {
                 fetch(this.url, { method: 'GET' })
-                    .then(res => res.json())
-                    .catch(() => alert('no connection!'))
+                    .then((res) => {
+                        if (res.ok) return res.json();
+                        throw new Error('Network response was not ok.');
+                    })
                     .then(result => {
                         this.siteInfo = result.records;
                         this.choicedSiteId = 0;
