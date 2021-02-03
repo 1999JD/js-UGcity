@@ -121,13 +121,18 @@
                     this.anotherRegions = [];
                     this.siteInfo.forEach((e, index, arr) => {
                         if (e.County == arr[this.choicedSiteId].County) {
-                            return this.anotherRegions.push({ siteName: e.SiteName, aqi: e.AQI });
+                            return this.anotherRegions.push({
+                                siteName: e.SiteName,
+                                aqi: e.AQI
+                            });
                         }
                     });
                 }
             },
             created: function () {
-                fetch(this.url, { method: 'GET' })
+                fetch(this.url, {
+                        method: 'GET'
+                    })
                     .then((res) => {
                         if (res.ok) return res.json();
                         throw new Error('Network response was not ok.');
@@ -138,11 +143,6 @@
                     });
             }
         })
-
-
-
-
-
     </script>
     <!-- source:https://data.gov.tw/dataset/40448; -->
 </body>

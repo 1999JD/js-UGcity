@@ -17,23 +17,30 @@ body{
 .controlCol li+li{
     padding-left: 44px;
 }
-.controlCol a{
+.controlCol li,a{
     text-decoration: none;
     color: black;
     cursor: pointer;
+    display: block;
+}
+.controlCol li:hover,a:hover {
+    color:#00CC99;
+}
+.controlCol li:active,a:active {
+    color:#01936F;
 }
 .controlCol i{
     padding-right: 8px;
 }
-.upArrow{
+.controlCol .upArrow{
     position: absolute;
     background-color: white;
     top:100%;
     transform: translateY(-50%);
-    padding:8px 20px;
+    padding:8px 20px; 
     border-radius: 50%;
 }
-.upArrow>i{
+.controlCol  .upArrow>i{
     padding:0;
     margin-top: 20px;
 }
@@ -90,6 +97,6 @@ select{
 .color:first-child{
     margin-left: 16px;
 }
-#canvas{
+canvas{
     background-color: #E8E8E8;
 }

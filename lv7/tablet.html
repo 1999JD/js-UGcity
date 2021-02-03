@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,182 +10,164 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src='https://kit.fontawesome.com/8e7fb7d8d3.js' crossorigin='anonymous'></script>
-    
+
 </head>
+
 <body>
     <div id="app">
-        <ul class="controlCol">
+        <ul class="controlCol" ref="controlCol">
             <li>
                 <a v-on:click="save" download="pic.png" :href="href"><i class="fas fa-save"></i>SAVE</a>
             </li>
-            <li>
-                <a v-on:click="clear"><i class="fas fa-expand"></i>CLEAR ALL</a>
+            <li @click="clear">
+                <i class="fas fa-expand"></i>CLEAR ALL
             </li>
-            <li>
-                <a v-on:click="undo"><i class="fas fa-undo"></i>UNDO</a>
+            <li @click="undo">
+                <i class="fas fa-undo"></i>UNDO
             </li>
-            <li>
-                <a v-on:click="redo"><i class="fas fa-redo"></i>REDO</a>
+            <li @click="redo">
+                <i class="fas fa-redo"></i>REDO
             </li>
-            <div class="upArrow" @click="offUp">
+            <li class="upArrow" @click="offUp">
                 <i class="fas fa-angle-up"></i>
-            </div>
+            </li>
         </ul>
-        <ul class="adjustPenCol">
-            <li class="downArrow" @click="offDown">
+        <canvas ref="canvas" @mouseup="endDrawing" @mouseout="endDrawing" @mousemove="handleMousemove"
+            @mousedown="handleMousedown"></canvas>
+        <div class="adjustPenCol" ref="adjustPenCol">
+            <div class="downArrow" @click="offDown">
                 <i class="fas fa-angle-down"></i>
-            </li>
-            <li>
-                <i class="fas fa-paint-brush"></i>
-            </li>
-            <li class="sizeCol">
+            </div>
+            <i class="fas fa-paint-brush"></i>
+            <div class="sizeCol">
                 SIZE:
-                <select v-on:change="changeLW">
+                <select v-on:change="ctx.lineWidth = selected" v-model="selected">
                     <option v-for="num in fontsize">
                         {{num}}
                     </option>
                 </select>
                 px
-            </li>
-            <li class="colorCol">
+            </div>
+            <ul class="colorCol">
                 COLOR:
-                <div v-for="color in colors" :style="{background: color}" class="color" v-on:click="changeColor(color)"></div>
-            </li>
-        </ul>
+                <li v-for="color in colors" :style="{background: color}" class="color" @click="ctx.strokeStyle = color">
+                </li>
+            </ul>
+        </div>
     </div>
-    <canvas id="canvas"></canvas>
 
-<script>
-    var vm = new Vue({
-        el:'#app',
-        data:{
-            fontsize :[8,10,12,14,16],
-            colors:['#FFFFFF','#000000','#9BFFCD','#00CC99','#01936F'],
-            selected:"",
-            href:"",
-            upClose:false,
-            downColse:false,
-        },
-        methods:{
-            save:function(e){
-                e.preventDefault();
-                let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); 
-                this.href=image;
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                canvas: {},
+                ctx: {},
+                fontsize: [1, 4, 5, 8, 10, 12, 14, 16],
+                colors: ['#FFFFFF', '#000000', '#9BFFCD', '#00CC99', '#01936F'],
+                href: "",
+                upClose: false,
+                downColse: false,
+                step: 0,
+                userhistory: [],
+                haveUndone: false,
+                offsetX: 0,
+                offsetY: 0,
+                isDrawing: false,
+                selected: 1
             },
-            clear:function(e){
-                e.preventDefault();
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                step=0;
-                haveUndoed =0;
-                userhistory=[];
-                userhistory.push(canvas.toDataURL());
+            mounted: function () {
+                this.canvas = this.$refs.canvas;
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                if (this.canvas.getContext) this.ctx = this.canvas.getContext('2d');
+                else alert('不支援');
+                this.userhistory.push(this.canvas.toDataURL());
             },
-            undo:function(e){
-                e.preventDefault();
-                haveUndoed =true;
-                let canvaspic = new Image();
-                if(step>0){
-                    step--;
-                    canvaspic.src = userhistory[step]; 
-                    canvaspic.onload = function() {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(canvaspic, 0, 0) //匯出影像並從座標 x:0 y:0 開始
-                    }
-                }
-                else step =0
-            },
-            redo:function(e){
-                e.preventDefault();
-                if(haveUndoed ==true){
-                    if(step >= userhistory.length-1)return false;
-                    else{
-                        step++;
-                        let canvaspic = new Image();
-                        canvaspic.src = userhistory[step];
-                        canvaspic.onload = function() {
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            ctx.drawImage(canvaspic, 0, 0);
+            methods: {
+                save: function (e) {
+                    let image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                    this.href = image;
+                },
+                clear: function (e) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.step = 0;
+                    this.haveUndone = 0;
+                    this.userhistory = [];
+                    this.userhistory.push(this.canvas.toDataURL());
+                },
+                undo: function (e) {
+                    this.haveUndone = true;
+                    let canvaspic = new Image();
+                    if (this.step > 0) {
+                        this.step--;
+                        canvaspic.src = this.userhistory[this.step];
+                        canvaspic.onload = function () {
+                            vm.ctx.clearRect(0, 0, vm.canvas.width, vm.canvas.height);
+                            vm.ctx.drawImage(canvaspic, 0, 0) //匯出影像並從座標 x:0 y:0 開始
+                        }
+                    } else this.step = 0
+                },
+                redo: function (e) {
+                    if (this.haveUndone == true) {
+                        if (this.step >= this.userhistory.length - 1) return false;
+                        else {
+                            this.step++;
+                            let canvaspic = new Image();
+                            canvaspic.src = this.userhistory[this.step];
+                            canvaspic.onload = function () {
+                                vm.ctx.clearRect(0, 0, vm.canvas.width, vm.canvas.height);
+                                vm.ctx.drawImage(canvaspic, 0, 0);
+                            }
                         }
                     }
+                },
+                offUp: function () {
+                    if (this.upClose == false) {
+                        this.$refs.controlCol.style.top = -55 + 'px';
+                        this.upClose = true;
+                    } else {
+                        this.$refs.controlCol.style.top = 0 + 'px';
+                        this.upClose = false;
+                    }
+                },
+                offDown: function () {
+                    if (this.downClose == false) {
+                        this.$refs.adjustPenCol.style.bottom = -95 + 'px';
+                        this.downClose = true;
+
+                    } else {
+                        this.$refs.adjustPenCol.style.bottom = 40 + 'px';
+                        this.downClose = false;
+                    }
+                },
+                handleMousedown: function (e) {
+                    this.isDrawing = true;
+                    this.offsetX = e.x;
+                    this.offsetY = e.y;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.offsetX, this.offsetY);
+                },
+                handleMousemove: function (e) {
+                    if (this.isDrawing == true) {
+                        this.ctx.lineTo(e.x, e.y);
+                        this.ctx.stroke();
+                    }
+                },
+                endDrawing(e) {
+                    if(this.isDrawing==false) return;
+                    console.log('here');
+                    this.ctx.closePath();
+                    this.isDrawing = false;
+                    if (this.haveUndone == true) {
+                        this.userhistory = this.userhistory.slice(0, this.step + 1);
+                        this.haveUndone = false;
+                    }
+                    this.step++;
+                    this.userhistory.push(this.canvas.toDataURL());
                 }
-            },
-            offUp:function(){
-                let controlCol = document.querySelector('.controlCol');
-                if(this.upClose==false){
-                    controlCol.style.top = -55 +'px';
-                    this.upClose=true;
-                }
-                else{
-                    controlCol.style.top = 0 +'px';
-                    this.upClose =false;
-                }  
-            },
-            offDown:function(){
-                let adjustPenCol = document.querySelector('.adjustPenCol');
-                if(this.downClose==false){
-                    adjustPenCol.style.bottom = -95 +'px';
-                    this.downClose = true;
-
-                }
-                else{
-                    adjustPenCol.style.bottom = 40 +'px';
-                    this.downClose=false;
-                } 
-            },
-            changeColor:(color) =>{ctx.strokeStyle = color},
-            changeLW:(e) =>{ctx.lineWidth = e.target.value},
-        }
-    });
-    var canvas = document.getElementById('canvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    if(canvas.getContext)var ctx = canvas.getContext('2d');
-    else alert('不支援');
-    var step = 0, userhistory =[],haveUndoed =false;
-    userhistory.push(canvas.toDataURL());
-    var offsetX = 0,offsetY =0;
-
-    var isDrawing = false;
-    canvas.addEventListener('mousedown',function(e){
-        e.preventDefault();
-        isDrawing = true;
-        offsetX = e.x;
-        offsetY =e.y;
-        console.log()
-        ctx.beginPath();
-        ctx.moveTo(offsetX,offsetY);
-    });
-    canvas.addEventListener('mousemove',function(e){
-        if(isDrawing == true){
-            ctx.lineTo(e.x,e.y);
-            ctx.stroke();
-        }
-        e.preventDefault();
-
-    });
-    canvas.addEventListener('mouseup', function(e){
-        endDrawing();
-        e.preventDefault();
-
-    });
-    canvas.addEventListener('mouseout',function(e){
-        endDrawing();
-        e.preventDefault();
-
-    })
-    function endDrawing(e){
-        ctx.closePath();
-        isDrawing =false;
-        if(haveUndoed==true){
-            userhistory=userhistory.slice(0,step+1);
-            haveUndoed =false;
-        }
-        step++;
-        userhistory.push(canvas.toDataURL());
-
-    }
-    
-</script>
+            }
+        });
+    </script>
 </body>
+
 </html>
