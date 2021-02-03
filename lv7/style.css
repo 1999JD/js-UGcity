@@ -69,8 +69,14 @@ body{
     align-items: center;
     padding-left: 40px;
 }
-.fa-paint-brush{
+.fa-paint-brush,.fa-eraser,.fa-vector-square{
     font-size: 42px;
+    padding-left: 16px;
+    color:#E8E8E8
+}
+.fa-paint-brush:hover,.fa-eraser:hover,.fa-vector-square:hover{
+    color:black;
+    cursor: pointer;
 }
 select{
     margin-left: 16px;
@@ -94,9 +100,15 @@ select{
     cursor: pointer;
     margin-left: 8px;
 }
+.color:active{
+    border:2px solid white;
+}
 .color:first-child{
     margin-left: 16px;
 }
 canvas{
     background-color: #E8E8E8;
+}
+.colorBlack{
+    color: black;
 }

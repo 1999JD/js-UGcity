@@ -38,10 +38,12 @@
             <div class="downArrow" @click="offDown">
                 <i class="fas fa-angle-down"></i>
             </div>
-            <i class="fas fa-paint-brush"></i>
+            <i class="fas fa-vector-square" :class="{'colorBlack':isRect}" @click="switchMode($event,'rect')"></i>
+            <i class="fas fa-eraser" :class="{'colorBlack':isEraser}" @click="switchMode($event,'eraser')"></i>
+            <i class="fas fa-paint-brush" :class="{'colorBlack':isPen}" @click="switchMode($event,'pen')"></i>
             <div class="sizeCol">
                 SIZE:
-                <select v-on:change="ctx.lineWidth = selected" v-model="selected">
+                <select v-on:change="ctx.lineWidth = selected;" v-model="selected">
                     <option v-for="num in fontsize">
                         {{num}}
                     </option>
@@ -50,7 +52,8 @@
             </div>
             <ul class="colorCol">
                 COLOR:
-                <li v-for="color in colors" :style="{background: color}" class="color" @click="ctx.strokeStyle = color">
+                <li v-for="color in colors" :style="{background: color}" class="color"
+                    @click=" changeColor($event,color) ">
                 </li>
             </ul>
         </div>
@@ -70,10 +73,13 @@
                 step: 0,
                 userhistory: [],
                 haveUndone: false,
-                offsetX: 0,
-                offsetY: 0,
                 isDrawing: false,
-                selected: 1
+                selected: 1,
+                isEraser: false,
+                isPen: true,
+                isRect: false,
+                rectX: 0,
+                rectY: 0
             },
             mounted: function () {
                 this.canvas = this.$refs.canvas;
@@ -84,6 +90,35 @@
                 this.userhistory.push(this.canvas.toDataURL());
             },
             methods: {
+                switchMode: function (e, value) {
+                    switch (value) {
+                        case 'rect':
+                            this.isRect = true; this.isEraser = false; this.isPen = false;
+                            this.ctx.restore();
+                            this.ctx.lineWidth = this.selected;
+                            break
+                        case 'eraser':
+                            this.isEraser = true; this.isPen = false; this.isRect = false;
+                            this.ctx.save();
+                            this.ctx.strokeStyle = '#E8E8E8';
+                            break
+                        case 'pen':
+                            this.isPen = true; this.isEraser = false; this.isRect = false;
+                            this.ctx.restore();
+                            this.ctx.lineWidth = this.selected;
+                            break
+                    }
+                },
+                changeColor: function (e, color) {
+                    if (this.isEraser == true) return;
+                    this.ctx.strokeStyle = color;
+                    let temp = document.getElementsByClassName('color');
+                    for (element of temp) {
+                        element.style.border="2px solid black"
+                    }
+                    e.target.style.border = "2px solid #e8e8e8"
+
+                },
                 save: function (e) {
                     let image = this.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
                     this.href = image;
@@ -142,20 +177,27 @@
                 },
                 handleMousedown: function (e) {
                     this.isDrawing = true;
-                    this.offsetX = e.x;
-                    this.offsetY = e.y;
                     this.ctx.beginPath();
-                    this.ctx.moveTo(this.offsetX, this.offsetY);
+                    if (this.isRect == true) {
+                        this.rectX = e.x;
+                        this.rectY = e.y;
+                        return
+                    }
+                    this.ctx.moveTo(e.x, e.y);
                 },
                 handleMousemove: function (e) {
-                    if (this.isDrawing == true) {
-                        this.ctx.lineTo(e.x, e.y);
-                        this.ctx.stroke();
-                    }
+                    if (this.isDrawing == false) return
+                    if (this.isRect == true) return;
+                    this.ctx.lineTo(e.x, e.y);
+                    this.ctx.stroke();
+
                 },
                 endDrawing(e) {
-                    if(this.isDrawing==false) return;
-                    console.log('here');
+                    if (this.isDrawing == false) return;
+                    if (this.isRect == true) {
+                        this.ctx.rect(this.rectX, this.rectY, e.x - this.rectX, e.y - this.rectY);
+                        this.ctx.stroke();
+                    }
                     this.ctx.closePath();
                     this.isDrawing = false;
                     if (this.haveUndone == true) {
