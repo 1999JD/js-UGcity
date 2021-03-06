@@ -1,148 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>js新手地下城第七關-canvas繪圖板</title>
+    <title>js新手地下城第八關-井字遊戲</title>
     <link rel="stylesheet" href="../reset.css">
     <link rel="stylesheet" href="style.css">
     <script src='https://kit.fontawesome.com/8e7fb7d8d3.js' crossorigin='anonymous'></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
 </head>
+
 <body>
     <div id="app">
         <div class="start" v-show="start">
             <ul class="start-content field">
-                <li>TIC</li>
-                <li><div class="solidcircle"></div></li>
-                <li class="emptycross"><div class="cover"></div></li>
+                <li><span class="start-content-text">TIC</span></li>
+                <li>
+                    <div class="solidcircle"></div>
+                </li>
+                <li class="emptycross">
+                    <div class="cover"></div>
+                </li>
                 <li class="solidcross"></li>
-                <li>TAC</li>
-                <li><div class="emptycircle"></div></li>
-                <li><div class="emptycircle"></div></li>
+                <li><span class="start-content-text">TAC</span></li>
+                <li>
+                    <div class="emptycircle"></div>
+                </li>
+                <li>
+                    <div class="emptycircle"></div>
+                </li>
                 <li class="solidcross"></li>
-                <li>TOE</li>
+                <li><span class="start-content-text">TOE</span></li>
             </ul>
-            <input type="button" class="btn start-btn" value="START" @click="setGame">
+            <input type="button" class="btn start-btn" value="START" @click="gameStart">
         </div>
-        <div class="game" v-show="game">
-                <div class="game-scoreboard">
-                    <div class="game-scoreboard-player">
-                        <span class="icon iconx"><i class="fas fa-times"></i></span>
-                        <span class="player playerx" v-text="scorex">10</span>
-                    </div>
-                    <span class="vs">VS</span>
-                    <div class="game-scoreboard-player playery">
-                        <span class="player playero" v-text="scoreo">8</span>
-                        <span class="icon icono"><i class="far fa-circle"></i></span>
-                    </div>
+        <div class="game" v-show="start==false">
+            <div class="game-scoreboard">
+                <div class="game-scoreboard-player">
+                    <span class="icon iconx" :class="{'turn':round ==1}"><i class="fas fa-times"></i></span>
+                    <span class="player playerx">{{history.x}}</span>
                 </div>
-                <div class="game-round" :class="{'text-align-right':oturn}">YOUR TURN!</div>
-                <ul class="game-field field " v-show="gamefield" @click="gamecontroller($event)">
-                    <li v-for="index in 9" :value="index"></li>
-                </ul>
-            <div class="game-winner winnerx field"  v-show="xwin"><i class="far fa-circle"></i></div>
-            <div class="game-winner winnero field"  v-show="owin"><i class="fas fa-times"></i></div>
-            <div class="game-draw field"  v-show="draw"><i class="far fa-circle"></i><i class="fas fa-times"></i></div>
-            <input type="button" class="btn game-btn" value="RESTART" @click = "restart">
+                <span class="vs">VS</span>
+                <div class="game-scoreboard-player playery">
+                    <span class="player playero">{{history.o}}</span>
+                    <span class="icon icono" :class="{'turn':round ==0}"><i class="far fa-circle"></i></span>
+                </div>
+            </div>
+            <div class="game-round" :class="{'text-align-right':round == 0}">YOUR TURN!</div>
+            <ul class="game-field field " v-show="results.ongoing" @click="gamecontroller($event)">
+                <li v-for="index in 9" :value="index"></li>
+            </ul>
+            <div class="game-winner winnerx field" v-show="results.owin"><i class="far fa-circle"></i></div>
+            <div class="game-winner winnero field" v-show="results.xwin"><i class="fas fa-times"></i></div>
+            <div class="game-draw field" v-show="results.draw"><i class="far fa-circle"></i><i class="fas fa-times"></i>
+            </div>
+            <input type="button" class="btn game-btn" value="RESTART" @click="restart">
         </div>
     </div>
-      <script>
-          var vm = new Vue({
-            el : "#app",
-            data :{
-                scoreo:0,
-                scorex:0,
-                round:0,//first:0,second:1
-                oturn:true,
-                start:true,
-                game:false,
-                gamefield:false,
-                owin:false,
-                xwin:false,
-                draw:false,
-                isSet:[2,2,2, 2,2,2, 2,2,2],
-                successCondition:[
-                    [1,2,3],[4,5,6],[7,8,9],
-                    [1,4,7],[2,5,8],[3,6,9],
-                    [1,5,9],[3,5,7]
+    <script>
+        let test = 'wow';
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                history: {
+                    o: 0,
+                    x: 0,
+                },
+                score: {
+                    o: 0,
+                    x: 0,
+                },
+                round: 0,//first:0,second:1
+                start: true,
+                results: {
+                    ongoing: false,
+                    owin: false,
+                    xwin: false,
+                    draw: false
+                },
+                gameSituation: [2, 2, 2, 2, 2, 2, 2, 2, 2],
+                successCondition: [
+                    [1, 2, 3], [4, 5, 6], [7, 8, 9],
+                    [1, 4, 7], [2, 5, 8], [3, 6, 9],
+                    [1, 5, 9], [3, 5, 7]
                 ],
             },
-            methods:{
-                restart:function(){
-                    document.querySelector('body').style.background='black';
-                    this.scoreo = 0;
-                    this.scorex = 0;
+            methods: {
+                restart: function () {
+                    document.querySelector('body').style.background = 'black';
+                    this.score.o = 0;
+                    this.score.x = 0;
                     this.round = 0;
                     this.start = true;
-                    this.game= false;
-                    this.gamefthisield=false;
-                    this.owin=false;
-                    this.xwin=false;
-                    this.draw=false;
-                    this.isSet=[2,2,2, 2,2,2, 2,2,2];
+                    for (item in this.results) {
+                        this.results[item] = false;
+                    }
+                    this.gameSituation = [2, 2, 2, 2, 2, 2, 2, 2, 2];
                     var nestedLis = document.querySelectorAll('.game-field > li');
                     [].forEach.call(nestedLis, function (li) {
                         li.innerHTML = "";
                     });
                 },
-                setGame:function(){
-                    document.querySelector('body').style.background='#FF6D70';
-                    this.start=false;
-                    this.game= true;
-                    this.gamefield=true;
+                gameStart: function () {
+                    document.querySelector('body').style.background = '#FF6D70';
+                    this.start = false;
+                    this.results.ongoing = true;
                 },
-                gamecontroller:function(e){
+                gamecontroller: function (e) {
                     let clicked = e.target.value;
-                    if(this.isSet[clicked-1] ==2 && this.round==0){
-                        e.target.innerHTML=`<i class="far fa-circle"></i>`;
-                        this.scoreo+=1;
-                        this.isSet[clicked- 1] =0;
+                    if (this.gameSituation[clicked - 1] == 2 && this.round == 0) {
+                        e.target.innerHTML = `<i class="far fa-circle"></i>`;
+                        this.score.o += 1;
+                        this.gameSituation[clicked - 1] = 0;
                         this.round = 1;
-                        this.oturn=false;
                     }
-                    else if(this.isSet[clicked-1] ==2 && this.round == 1){
-                        e.target.innerHTML=`<i class="fas fa-times"></i>`;
-                        this.scorex+=1;
-                        this.isSet[clicked- 1] = 1;
+                    else if (this.gameSituation[clicked - 1] == 2 && this.round == 1) {
+                        e.target.innerHTML = `<i class="fas fa-times"></i>`;
+                        this.score.x += 1;
+                        this.gameSituation[clicked - 1] = 1;
                         this.round = 0;
-                        this.oturn=true;
                     }
                     this.judge(clicked);
                 },
-                judge:function(pos){
+                judge: function (pos) {
                     let success = this.successCondition;
-                    success.forEach((item,index) => {
-                        if(item.indexOf(pos)!=-1){
-                            let judgeArr = [this.isSet[item[0]-1],this.isSet[item[1]-1],this.isSet[item[2]-1]];
-                            let count=0;
-                            judgeArr.forEach((value)=>{
-                                if(value==this.isSet[pos-1]) count++
+                    success.forEach((item, index) => {
+                        if (item.indexOf(pos) != -1) {
+                            let judgeArr = [this.gameSituation[item[0] - 1], this.gameSituation[item[1] - 1], this.gameSituation[item[2] - 1]];
+                            let count = 0;
+                            judgeArr.forEach((value) => {
+                                if (value == this.gameSituation[pos - 1]) count++
                             })
-                            if(count===judgeArr.length){
-                                this.gamefield = false;
-                                switch(this.isSet[pos-1]){
-                                    case 0: 
-                                    this.xwin = true;
-                                    break;
+                            if (count === judgeArr.length) {
+                                this.results.ongoing = false;
+                                switch (this.gameSituation[pos - 1]) {
+                                    case 0:
+                                        this.results.owin = true;
+                                        console.log('owin');
+                                        localStorage.setItem('winTimesO', parseInt(this.history.o) + 1);
+                                        this.history.o = localStorage.getItem('winTimesO');
+                                        break;
                                     case 1:
-                                    this.owin = true;
-                                    break;
+                                        this.results.xwin = true;
+                                        console.log('xwin');
+                                        localStorage.setItem('winTimesX', parseInt(this.history.x) + 1);
+                                        this.history.x = localStorage.getItem('winTimesX');
+                                        break;
                                 }
                             }
                         }
                     });
-                    if(this.scoreo==5 && this.scorex==4 && this.owin==false && this.xwin==false){
-                        this.gamefield=false;
-                        this.draw = true;
+                    if (this.score.o == 5 && this.score.x == 4 && this.results.owin == false && this.results.xwin == false) {
+                        this.results.ongoing = false;
+                        this.results.draw = true;
                     }
-                }
+                },
+            },
+            created: function () {
+                if (!localStorage.getItem('winTimesO')) {localStorage.setItem('winTimesO', 0);console.log('execute correct')}
+                this.history.o = localStorage.getItem('winTimesO');
+                if (!localStorage.getItem('winTimesX')) localStorage.setItem('winTimesX', 0);
+                this.history.x = localStorage.getItem('winTimesX');
             }
         })
 
-      </script>
+    </script>
 
 </body>
+
 </html>

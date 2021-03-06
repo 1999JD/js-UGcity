@@ -100,9 +100,6 @@ select{
     cursor: pointer;
     margin-left: 8px;
 }
-.color:active{
-    border:2px solid white;
-}
 .color:first-child{
     margin-left: 16px;
 }
