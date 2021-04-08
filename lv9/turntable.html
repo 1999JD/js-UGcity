@@ -11,84 +11,121 @@
     <script type="text/javascript" src="prize.json"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <style>
-        .anim {
-            transition-timing-function: Ease-in-out;
-            transition: transform 2s;
-        }
-        .choicedStyle {
-            color: white !important;
-            background: #FF00BA !important;
-        }
-        .icons {
-            position: absolute;
-            overflow: hidden;
-            z-index: -1;
-            color: #1F1172;
-            /* font-size: 40px; */
-        }
-        .md-46 {
-            font-size: 46px;
-        }
     </style>
 </head>
 
 <body>
     <div id="app">
-        <ul class="turntable">
-            <li v-for="(name,nid) in names" :style="eachRotDeg[nid]">
-                <div class="inner" :style="eachPercent[nid]">
-                    <div class="prizeitem">
-                        <i class="material-icons md-36">{{iconsClass[nid]}}</i>
-                        <span>
-                            {{name}}
-                        </span>
-                        <span>
-                            ({{eachAmount[nid]}})
-                        </span>
+        <div class="year-btns">
+            <input type="button" value="2017" @click="changeTable(2017)">
+            <input type="button" value="2018" @click="changeTable(2018)">
+        </div>
+        <div class="turntable2017" v-if="turntable.year17">
+            <ul class="turntable">
+                <li v-for="(prize,prizeId) in prizes17"
+                    :style="{'--eachPercent':eachPercent,'transform':eachRotDeg[prizeId] }" :ref="prizeId">
+                    <div class="prizeitem" :style="prizeItemDeg">
+                        <i class="material-icons fz-36">{{prize.iconClassName}}</i>
+                        <p>
+                            {{prize.prizeName}}
+                        </p>
+                        <p>
+                            ({{prize.amount}})
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <a class="btn" @click.prevent="pickPrize($event)">Press
+                <div class="btn-hand anim"></div>
+            </a>
+            <div class="streamer" v-if="streamBg">
+                <div class="container">
+                    <div class="icons" v-for="i in 18" :style="iconPosition(i)">
+                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
+                    </div>
+                    <div class="icons" style="left:10px ;top:50%">
+                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
+                    </div>
+                    <div class="icons" style="right:-150px; top:50%">
+                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
                     </div>
                 </div>
-            </li>
-        </ul>
-        <div class="btn" @click="startRotate($event)">Press
-            <div class="btn-hand"></div>
-        </div>
-        <div class="streamer" v-if="getPrize">
-            <div class="icons" v-for="i in 50" :style="iconPosition(i)">
-                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
-            </div>
-            <div class="icons" style="left:10px">
-                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
-            </div>
-            <div class="icons" style="right:10px">
-                <i class="material-icons md-46">{{iconsClass[nowPrizeId]}}</i>
-            </div>
-            <h2 class="left">WELL<br>DONE!</h2>
-            <div class="center"></div>
-            <div class="right">
-                <p>YOU GET A FREE...</p>
-                <span class="choicedPrizeName">{{names[nowPrizeId]}}</span>
+                <h2 class="left">WELL<br>DONE!</h2>
+                <div class="center"></div>
+                <div class="right">
+                    <p>YOU GET A FREE...</p>
+                    <span class="choicedPrizeName">{{prizes17[choicedPrizeIndex].prizeName}}</span>
+                </div>
             </div>
         </div>
+        <!-- <div class="turntable2018" v-if="turntable.year18">
+            <ul class="turntable">
+                <li v-for="(prize,prizeId) in prizes18"
+                    :style="{'--eachPercent':eachPercent,'transform':eachRotDeg[prizeId] }" :ref="prizeId">
+                    <div class="prizeitem" :style="prizeItemDeg">
+                        <p>
+                            {{prize.prizeNumber}}
+                        </p>
+                        <p>
+                            ({{prize.amount}})
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <a class="btn" @click.prevent="pickPrize($event)">Press
+                <div class="btn-hand anim"></div>
+            </a>
+        </div> -->
     </div>
     <script>
-        var prizes;
-        var res;
         var vm = new Vue({
             el: "#app",
             data: {
-                pdata: [],
-                names: [],
-                eachAmount: [],
-                iconsClass: [],
-                angle: 0,
-                eachRotDeg: [],
-                eachPercent: [],
-                totalItems: [],
-                totalChoicedID: 0,
-                nowPrizeId: 0,
-                getPrize: false,
+                prizes17: [],
+                prizes18: [],
+                turntable: {
+                    year17: true,
+                    year18: false,
+                },
+                choicedIndex: 0,
+                choicedPrizeIndex: 0,
+                originAngle: 0,
+                streamBg: false,
+                isClicked: false,
+            },
+            created: function () {
+                let xhr = new XMLHttpRequest();
+                xhr.open('get', "./prize.json");
+                xhr.send();
+                xhr.onload = function () {
+                    let res = JSON.parse(xhr.responseText);
+                    vm.prizes17 = res[0].prizes2017;
+                    vm.prizes18 = res[0].prizes2018;
+                }
+            },
+            computed: {
+                eachRotDeg: function () {
+                    return this.prizes17.map((element, index, arr) => {
+                        return `rotate(${(360 / arr.length) * index}deg)`
+                    })
+                },
+                eachPercent: function () {
+                    return `rotate(${360 / this.prizes17.length}deg)`;
+                },
+                prizeItemDeg: function () {
+                    return { transform: `rotate(${(360 / this.prizes17.length / 2)}deg)` }
+                },
             },
             methods: {
+                changeTable: function (year) {
+                    if (year === 2017) {
+                        this.turntable.year17 = true;
+                        this.turntable.year18 = false;
+                    } else if (year === 2018) {
+                        this.turntable.year17 = false;
+                        this.turntable.year18 = true;
+                    }
+                },
                 iconPosition: function (i) {
                     if (i % 2 === 0) {
                         return {
@@ -104,93 +141,62 @@
                             transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
                         }
                     }
-
                 },
-                getJsonData: function () {
-                    let xhr = new XMLHttpRequest();
-                    xhr.open('get', "./prize.json");
-                    xhr.send();
-                    xhr.onload = function () {
-                        let res = JSON.parse(xhr.responseText);
-                        vm.pdata = res[0].prizes;
-                        vm.names = vm.pdata.map((item) => item.prizeName);
-                        vm.iconsClass = vm.pdata.map((item) => item.iconClass);
-                        vm.eachAmount = vm.pdata.map((item) => item.amount);
-                        vm.pdata.forEach((item, pid) => {
-                            vm.eachRotDeg.push({
-                                transform: 'rotate(' + (360 / vm.pdata.length) * pid + 'deg)',
-                            });
-                            vm.eachPercent.push({
-                                transform: 'rotate(' + (360 / vm.pdata.length) + 'deg)',
-                            });
-                            for (let i = 0; i < item.amount; i++) {
-                                vm.totalItems.push(item.prizeName);
-                            }
-                        });
+                pickPrize: function (e) {
+                    if (this.isClicked == true) return;
+                    if (this.prizes17.length == 0) return;
+                    this.reduceItem();
+                    this.isClicked = true;
+                    let pickedInAll;
+                    let allPrizes = [];
+                    this.prizes17.map((element, index, arr) => {
+                        for (let i = 0; i < element.amount; i++) {
+                            allPrizes.push(element.prizeName);
+                        }
+                    })
+                    if (allPrizes.length < 20) {
+                        this.$refs[this.choicedPrizeIndex][0].classList.remove('choiced-style');
+                        this.streamBg = false;
                     }
+                    // 隨機篩選
+                    pickedInAll = Math.floor(Math.random() * (allPrizes.length));
+                    //這個是什麼獎品
+                    this.prizes17.forEach((element, index) => {
+                        if (element.prizeName == allPrizes[pickedInAll]) {
+                            this.choicedPrizeIndex = index;
+                        }
+                    });
+                    //轉
+                    this.rotateHand(e);
                 },
-                startRotate: function (e) {
-                    if (this.totalItems.length < 20) {
-                        let allLi = document.querySelectorAll(".inner");
-                        allLi[this.nowPrizeId].classList.remove('choicedStyle');
-                        this.reduceItem();
-                        this.getPrize = false;
-                    }
-                    e.target.classList.remove('anim');
-                    this.angle = this.angle - 720;
-                    e.target.style.transform = `rotate(${this.angle}deg)`;
-                    this.totalChoicedID = Math.floor(Math.random() * (this.totalItems.length));
-                    this.nowPrizeId = vm.names.indexOf(this.totalItems[this.totalChoicedID])
-                    console.log(this.totalItems[this.totalChoicedID]);
-                    console.log(vm.names.indexOf(this.totalItems[this.totalChoicedID]));
-                    setTimeout(function () {
-                        vm.angle = 720 + (360 / vm.names.length) * vm.nowPrizeId;
-                        e.target.classList.add('anim');
-                        e.target.style.transform = `rotate(${vm.angle}deg)`;
-                        setTimeout(vm.afterAnim, 2500);
-                    }, 10);
-                },
-                afterAnim: function () {
-                    //改變顏色
-                    let allLi = document.querySelectorAll(".inner");
-                    allLi[this.nowPrizeId].classList.add('choicedStyle');
-                    //背景
-                    this.getPrize = true;
-                    // 減掉數值vm.$set(array, index, value)
-                    this.$set(this.eachAmount, this.nowPrizeId, this.eachAmount[this.nowPrizeId] - 1);
-                    this.totalItems.splice(this.totalChoicedID, 1);
-
+                rotateHand: function (e) {
+                    let newAngle = (360 / this.prizes17.length) * this.choicedPrizeIndex;
+                    e.target.classList.add('anim');
+                    if (newAngle - this.originAngle < 180)
+                        e.target.style.transform = `rotate(${newAngle + 1080}deg)`;
+                    else
+                        e.target.style.transform = `rotate(${newAngle + 720}deg)`;
+                    this.originAngle = newAngle;
+                    setTimeout(() => {
+                        e.target.classList.remove('anim');
+                        e.target.style.transform = `rotate(${this.originAngle}deg)`;
+                        this.$refs[this.choicedPrizeIndex][0].classList.add('choiced-style')
+                        this.streamBg = true;
+                        this.prizes17[this.choicedPrizeIndex].amount -= 1;
+                        this.isClicked = false;
+                    }, 2000);
                 },
                 reduceItem: function () {
-                    if (this.eachAmount[this.nowPrizeId] == 0) {
-                        this.names.splice(this.nowPrizeId, 1);
-                        this.eachAmount.splice(this.nowPrizeId, 1);
-                        this.iconsClass.splice(this.nowPrizeId, 1);
-                        vm.eachRotDeg = [];
-                        vm.eachPercent = [];
-                        vm.names.forEach((item, nid) => {
-                            vm.eachRotDeg.push({
-                                transform: 'rotate(' + (360 / vm.names.length) * nid + 'deg)',
-                            });
-                            vm.eachPercent.push({
-                                transform: 'rotate(' + (360 / vm.names.length) + 'deg)',
-                            })
-                        });
-                        if (vm.names.length % 2 === 1) {
-                            let lastLi = document.querySelector(`li:nth-child(${vm.names.length})>.inner`);
-                            lastLi.style.background = "rgb(0, 16, 151)";
-                            lastLi.style.color = "white";
-                        }
-                        if (vm.names.length === 1) {
-                            document.querySelector('li').style.clipPath = "none";
-                            document.querySelector('.inner').style.width = "100%";
-                        }
-                    }
+                    if (this.prizes17[this.choicedPrizeIndex].amount != 0) return
+                    this.prizes17.splice(this.choicedPrizeIndex, 1);
+                    if (this.prizes17.length % 2 === 1)
+                        this.$refs[this.prizes17.length - 1][0].classList.add('last');
+                    if (this.prizes17.length === 1)
+                        this.$refs[0][0].classList.add('the-only-left');
                 }
-
             }
         });
-        vm.getJsonData();
+
     </script>
 </body>
 

@@ -1,26 +1,32 @@
-body{
-    height: 100vh;
+body {
     background-color: #5858B9;
     font-size: 32px;
     font-weight: bold;
+    user-select: none;
 }
-#app{
+
+#app {
     overflow: hidden;
-    position: relative;
-    transform: translateY(20px);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.md-36{
+
+.fz-36 {
     font-size: 36px;
 }
-.turntable{
+
+.turntable {
     width: 540px;
     height: 540px;
-    transform:rotate(-30deg);
+    transform: rotate(-30deg);
     position: relative;
-    margin: 0 auto;
 }
-.turntable::after{
-    content:"";
+
+.turntable::after {
+    content: "";
     position: absolute;
     width: 540px;
     height: 540px;
@@ -28,106 +34,188 @@ body{
     background-repeat: no-repeat;
     background-position: center;
 }
-li{
+
+.turntable li {
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%)
+    clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
     /* 做出一個半圓形 */
 }
-.inner{
+
+.turntable li::before {
+    content: "";
     width: 50%;
     height: 100%;
+    display: block;
     transform-origin: right center;
-    background-color:#F0BEFF;
-    color:#343BAA;
-    position: relative;
-}
-.prizeitem{
-    width: 60%;
+    background-color: #F0BEFF;
     position: absolute;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    top:60px;
-    right:35%;
-    transform-origin: right center;
-    transform:rotate(-30deg) translateX(50%)
+    transform: var(--eachPercent);
 }
-li:nth-child(even)>.inner{
+
+.prizeitem {
+    height: 50%;
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 30px;
+    transform-origin: bottom center;
+    color: #343BAA;
+}
+
+.turntable li:nth-child(even) .prizeitem {
+    color: #F0BEFF
+}
+
+li:nth-child(even)::before {
     background-color: #343BAA;
-    color:#F0BEFF;
 }
-.btn,.btn-hand,.btn-hand::after,.streamer{
+
+.btn,
+.btn-hand,
+.btn-hand::after,
+.streamer {
     position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    margin:auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
-.btn{
+
+.btn {
+    display: block;
     z-index: 10;
     width: 128px;
     height: 128px;
     border-radius: 50%;
-    color:#FF00BA;
+    color: #FF00BA;
     background-color: #1F1172;
     font-size: 32px;
     font-weight: bold;
     text-align: center;
     line-height: 128px;
-    cursor: pointer;   
+    cursor: pointer;
 }
+
 .btn:hover {
     background-color: white;
 }
+
 .btn:active {
     background-color: rgb(0, 16, 151);
 }
-.btn-hand{
+
+.btn-hand {
     width: 1px;
     height: 1px;
 }
-.btn-hand::after{
-    content:"";
+
+.anim {
+    transition-timing-function: Ease-in-out;
+    transition: all 2s;
+}
+
+.btn-hand::after {
+    content: "";
     width: 256px;
     height: 256px;
-    transform: translate(-50% , -19%);
+    transform: translate(-50%, -19%);
     background-image: url('./hand.svg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
-.anim {
-    transition-timing-function: Ease-in-out;
-    transition: transform 3s;
-}
-.streamer{
+
+.streamer {
     background-color: #343BAA;
-    color:white;
-    height: 40%;
+    color: white;
+    height: 400px;
     z-index: -1;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 }
-.center{
+
+
+.streamer .center {
     width: 540px;
     height: 540px;
 }
-.left{
+
+.streamer .left {
     font-size: 72px;
+    background-color: #343BAA;
+
 }
-.right{
+
+.streamer .right {
     font-size: 32px;
     transform: translateX(60px);
+    background-color: #343BAA;
 }
-.choicedPrizeName{
+
+.streamer .choicedPrizeName {
     font-size: 72px;
-    color:#FF00BA;
+    color: #FF00BA;
     text-decoration: underline;
+}
+
+.streamer .icons {
+    position: absolute;
+    overflow: hidden;
+    z-index: -1;
+    color: #1F1172;
+}
+.streamer .container{
+    position: absolute;
+    width: 1200px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0 auto;
+    transform: translateX(-10%);
+}
+
+.choiced-style::before {
+    background: #FF00BA !important;
+}
+
+.choiced-style .prizeitem {
+    color: white !important;
+}
+
+.turntable .last::before {
+    background: rgb(0, 16, 151);
+}
+
+.last .prizeitem {
+    color: white;
+}
+
+.turntable .the-only-left {
+    clip-path: none;
+}
+
+.turntable .the-only-left::before {
+    width: 100%;
+}
+
+.year-btns{
+    position: absolute;
+    z-index: 11;
+    top:10%;
+}
+.year-btns input {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 0 10px;
+    font-size: 20px;
+    background: #F0BEFF;
+    cursor: pointer;
+
 }
