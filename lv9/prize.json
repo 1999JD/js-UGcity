@@ -34,83 +34,83 @@
         ],
         "prizes2018": [
             {
-                "prizeNumber": 1,
+                "prizeName": 1,
                 "amount": 1
             },
             {
-                "prizeNumber": 2,
+                "prizeName": 2,
                 "amount": 1
             },
             {
-                "prizeNumber": 3,
+                "prizeName": 3,
                 "amount": 1
             },
             {
-                "prizeNumber": 4,
+                "prizeName": 4,
                 "amount": 1
             },
             {
-                "prizeNumber": 5,
+                "prizeName": 5,
                 "amount": 1
             },
             {
-                "prizeNumber": 6,
+                "prizeName": 6,
                 "amount": 1
             },
             {
-                "prizeNumber": 7,
+                "prizeName": 7,
                 "amount": 1
             },
             {
-                "prizeNumber": 8,
+                "prizeName": 8,
                 "amount": 1
             },
             {
-                "prizeNumber": 9,
+                "prizeName": 9,
                 "amount": 1
             },
             {
-                "prizeNumber": 10,
+                "prizeName": 10,
                 "amount": 1
             },
             {
-                "prizeNumber": 11,
+                "prizeName": 11,
                 "amount": 1
             },
             {
-                "prizeNumber": 12,
+                "prizeName": 12,
                 "amount": 1
             },
             {
-                "prizeNumber": 13,
+                "prizeName": 13,
                 "amount": 1
             },
             {
-                "prizeNumber": 14,
+                "prizeName": 14,
                 "amount": 1
             },
             {
-                "prizeNumber": 15,
+                "prizeName": 15,
                 "amount": 1
             },
             {
-                "prizeNumber": 16,
+                "prizeName": 16,
                 "amount": 1
             },
             {
-                "prizeNumber": 17,
+                "prizeName": 17,
                 "amount": 5
             },
             {
-                "prizeNumber": 18,
+                "prizeName": 18,
                 "amount": 10
             },
             {
-                "prizeNumber": 19,
+                "prizeName": 19,
                 "amount": 20
             },
             {
-                "prizeNumber": 20,
+                "prizeName": 20,
                 "amount": 69
             }
         ]

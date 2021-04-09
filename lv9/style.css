@@ -21,10 +21,17 @@ body {
 .turntable {
     width: 540px;
     height: 540px;
-    transform: rotate(-30deg);
     position: relative;
 }
-
+.table17{
+    transform: rotate(-30deg);
+}
+.table18{
+    transform: rotate(-10deg);
+}
+.year-btns .bg-gray{
+    background: #aaa;
+}
 .turntable::after {
     content: "";
     position: absolute;
@@ -189,19 +196,19 @@ li:nth-child(even)::before {
     color: white !important;
 }
 
-.turntable .last::before {
+.odd li:last-child::before {
     background: rgb(0, 16, 151);
 }
 
-.last .prizeitem {
+.odd li:last-child .prizeitem {
     color: white;
 }
 
-.turntable .the-only-left {
+.the-only-left li{
     clip-path: none;
 }
 
-.turntable .the-only-left::before {
+.the-only-left li::before {
     width: 100%;
 }
 

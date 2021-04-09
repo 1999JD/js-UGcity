@@ -17,14 +17,14 @@
 <body>
     <div id="app">
         <div class="year-btns">
-            <input type="button" value="2017" @click="changeTable(2017)">
-            <input type="button" value="2018" @click="changeTable(2018)">
+            <input type="button" value="2017" @click="changeTable(17,18)" :class="{'bg-gray':isClicked}">
+            <input type="button" value="2018" @click="changeTable(18,17)" :class="{'bg-gray':isClicked}">
         </div>
         <div class="turntable2017" v-if="turntable.year17">
-            <ul class="turntable">
+            <ul class="turntable table17" ref="turntable">
                 <li v-for="(prize,prizeId) in prizes17"
-                    :style="{'--eachPercent':eachPercent,'transform':eachRotDeg[prizeId] }" :ref="prizeId">
-                    <div class="prizeitem" :style="prizeItemDeg">
+                    :style="{'--eachPercent':eachPercent.year17,'transform':eachRotDeg.year17[prizeId] }">
+                    <div class="prizeitem" :style="prizeItemDeg.year17">
                         <i class="material-icons fz-36">{{prize.iconClassName}}</i>
                         <p>
                             {{prize.prizeName}}
@@ -35,36 +35,36 @@
                     </div>
                 </li>
             </ul>
-            <a class="btn" @click.prevent="pickPrize($event)">Press
+            <a class="btn" @click.prevent="pickPrize($event,17)">Press
                 <div class="btn-hand anim"></div>
             </a>
             <div class="streamer" v-if="streamBg">
                 <div class="container">
                     <div class="icons" v-for="i in 18" :style="iconPosition(i)">
-                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
+                        <i class="material-icons fz-36">{{prizes17[prizeWinId.year17].iconClassName}}</i>
                     </div>
                     <div class="icons" style="left:10px ;top:50%">
-                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
+                        <i class="material-icons fz-36">{{prizes17[prizeWinId.year17].iconClassName}}</i>
                     </div>
                     <div class="icons" style="right:-150px; top:50%">
-                        <i class="material-icons fz-36">{{prizes17[choicedPrizeIndex].iconClassName}}</i>
+                        <i class="material-icons fz-36">{{prizes17[prizeWinId.year17].iconClassName}}</i>
                     </div>
                 </div>
                 <h2 class="left">WELL<br>DONE!</h2>
                 <div class="center"></div>
                 <div class="right">
                     <p>YOU GET A FREE...</p>
-                    <span class="choicedPrizeName">{{prizes17[choicedPrizeIndex].prizeName}}</span>
+                    <span class="choicedPrizeName">{{prizes17[prizeWinId.year17].prizeName}}</span>
                 </div>
             </div>
         </div>
-        <!-- <div class="turntable2018" v-if="turntable.year18">
-            <ul class="turntable">
+        <div class="turntable2018" v-if="turntable.year18">
+            <ul class="turntable table18" ref="turntable">
                 <li v-for="(prize,prizeId) in prizes18"
-                    :style="{'--eachPercent':eachPercent,'transform':eachRotDeg[prizeId] }" :ref="prizeId">
-                    <div class="prizeitem" :style="prizeItemDeg">
+                    :style="{'--eachPercent':eachPercent.year18,'transform':eachRotDeg.year18[prizeId] }">
+                    <div class="prizeitem" :style="prizeItemDeg.year18">
                         <p>
-                            {{prize.prizeNumber}}
+                            {{prize.prizeName}}
                         </p>
                         <p>
                             ({{prize.amount}})
@@ -72,23 +72,45 @@
                     </div>
                 </li>
             </ul>
-            <a class="btn" @click.prevent="pickPrize($event)">Press
+            <a class="btn" @click.prevent="pickPrize($event,18)">Press
                 <div class="btn-hand anim"></div>
             </a>
-        </div> -->
+            <div class="streamer" v-if="streamBg">
+                <div class="container">
+                    <div class="icons" v-for="i in 18" :style="iconPosition(i)">
+                        <i class="fz-36">{{prizes18[prizeWinId.year18].prizeName}}</i>
+                    </div>
+                    <div class="icons" style="left:10px ;top:50%">
+                        <i class="fz-36">{{prizes18[prizeWinId.year18].prizeName}}</i>
+                    </div>
+                    <div class="icons" style="right:-150px; top:50%">
+                        <i class="fz-36">{{prizes18[prizeWinId.year18].prizeName}}</i>
+                    </div>
+                </div>
+                <h2 class="left">WELL<br>DONE!</h2>
+                <div class="center"></div>
+                <div class="right">
+                    <p>YOU GET Number...</p>
+                    <span class="choicedPrizeName">{{prizes18[prizeWinId.year18].prizeName}}</span>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         var vm = new Vue({
             el: "#app",
             data: {
+                originData: {},
                 prizes17: [],
                 prizes18: [],
                 turntable: {
                     year17: true,
                     year18: false,
                 },
-                choicedIndex: 0,
-                choicedPrizeIndex: 0,
+                prizeWinId: {
+                    year17: 0,
+                    year18: 0,
+                },
                 originAngle: 0,
                 streamBg: false,
                 isClicked: false,
@@ -99,78 +121,90 @@
                 xhr.send();
                 xhr.onload = function () {
                     let res = JSON.parse(xhr.responseText);
-                    vm.prizes17 = res[0].prizes2017;
-                    vm.prizes18 = res[0].prizes2018;
+                    this.originData = res[0];
+                    vm.prizes17 = this.originData.prizes2017;
+                    vm.prizes18 = this.originData.prizes2018;
                 }
             },
             computed: {
                 eachRotDeg: function () {
-                    return this.prizes17.map((element, index, arr) => {
-                        return `rotate(${(360 / arr.length) * index}deg)`
-                    })
+                    let calDeg = year => {
+                        return this[`prizes${year}`].map((element, index, arr) => {
+                            return `rotate(${(360 / arr.length) * index}deg)`
+                        })
+                    }
+                    return { year17: calDeg(17), year18: calDeg(18) }
                 },
                 eachPercent: function () {
-                    return `rotate(${360 / this.prizes17.length}deg)`;
+                    let calPercent = year => {
+                        return `rotate(${360 / this[`prizes${year}`].length}deg)`;
+                    }
+                    return { year17: calPercent(17), year18: calPercent(18) }
                 },
                 prizeItemDeg: function () {
-                    return { transform: `rotate(${(360 / this.prizes17.length / 2)}deg)` }
+                    let calDeg = year => {
+                        return { transform: `rotate(${(360 / this[`prizes${year}`].length / 2)}deg)` }
+                    }
+                    return { year17: calDeg(17), year18: calDeg(18) }
                 },
             },
             methods: {
-                changeTable: function (year) {
-                    if (year === 2017) {
-                        this.turntable.year17 = true;
-                        this.turntable.year18 = false;
-                    } else if (year === 2018) {
-                        this.turntable.year17 = false;
-                        this.turntable.year18 = true;
-                    }
+                changeTable: function (yeartrue, yearfalse) {
+                    if (this.isClicked) return
+                    this.reduceItem(yearfalse);
+                    this.turntable[`year${yearfalse}`] = false;
+                    this.turntable[`year${yeartrue}`] = true;
+
                 },
                 iconPosition: function (i) {
-                    if (i % 2 === 0) {
-                        return {
-                            top: -Math.floor(Math.random() * 30) + 'px',
-                            left: i * 70 + 'px',
-                            transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
-                        }
-                    }
-                    else {
-                        return {
-                            bottom: -Math.floor(Math.random() * 30) + 'px',
-                            left: i * 70 + Math.floor(Math.random() * i) + 'px',
-                            transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
-                        }
-                    }
+                    let position = {};
+                    position[`${i % 2 == 0 ? 'top' : 'bottom'}`] = -Math.floor(Math.random() * 30) + 'px';
+                    position['left'] = i % 2 == 0 ? `${i * 70}px` : `${i * 70 + Math.floor(Math.random() * i)}px`;
+                    position['transform'] = `rotate(${i * Math.floor(Math.random() * 100)}deg)`;
+                    return position;
+                    // if (i % 2 === 0) {
+
+                    //     return {
+                    //         top: -Math.floor(Math.random() * 30) + 'px',
+                    //         left: i * 70 + 'px',
+                    //         transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
+                    //     }
+                    // }
+                    // else {
+                    //     return {
+                    //         bottom: -Math.floor(Math.random() * 30) + 'px',
+                    //         left: i * 70 + Math.floor(Math.random() * i) + 'px',
+                    //         transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
+                    //     }
+                    // }
                 },
-                pickPrize: function (e) {
+                pickPrize: function (e, year) {
                     if (this.isClicked == true) return;
-                    if (this.prizes17.length == 0) return;
-                    this.reduceItem();
+                    this.reduceItem(year);
+                    if (this[`prizes${year}`].length <= 0) return;
+
                     this.isClicked = true;
                     let pickedInAll;
                     let allPrizes = [];
-                    this.prizes17.map((element, index, arr) => {
+                    //獎品數目攤開陣列
+                    this[`prizes${year}`].map((element, index, arr) => {
                         for (let i = 0; i < element.amount; i++) {
                             allPrizes.push(element.prizeName);
                         }
                     })
-                    if (allPrizes.length < 20) {
-                        this.$refs[this.choicedPrizeIndex][0].classList.remove('choiced-style');
-                        this.streamBg = false;
-                    }
                     // 隨機篩選
                     pickedInAll = Math.floor(Math.random() * (allPrizes.length));
                     //這個是什麼獎品
-                    this.prizes17.forEach((element, index) => {
+                    this[`prizes${year}`].forEach((element, index) => {
                         if (element.prizeName == allPrizes[pickedInAll]) {
-                            this.choicedPrizeIndex = index;
+                            this.prizeWinId[`year${year}`] = index;
                         }
                     });
                     //轉
-                    this.rotateHand(e);
+                    this.rotateHand(e, year);
                 },
-                rotateHand: function (e) {
-                    let newAngle = (360 / this.prizes17.length) * this.choicedPrizeIndex;
+                rotateHand: function (e, year) {
+                    let newAngle = (360 / this[`prizes${year}`].length) * this.prizeWinId[`year${year}`];
                     e.target.classList.add('anim');
                     if (newAngle - this.originAngle < 180)
                         e.target.style.transform = `rotate(${newAngle + 1080}deg)`;
@@ -180,21 +214,31 @@
                     setTimeout(() => {
                         e.target.classList.remove('anim');
                         e.target.style.transform = `rotate(${this.originAngle}deg)`;
-                        this.$refs[this.choicedPrizeIndex][0].classList.add('choiced-style')
+                        vm.$refs.turntable.childNodes[this.prizeWinId[`year${year}`]].classList.add('choiced-style')
                         this.streamBg = true;
-                        this.prizes17[this.choicedPrizeIndex].amount -= 1;
+                        this[`prizes${year}`][this.prizeWinId[`year${year}`]].amount -= 1;
                         this.isClicked = false;
                     }, 2000);
                 },
-                reduceItem: function () {
-                    if (this.prizes17[this.choicedPrizeIndex].amount != 0) return
-                    this.prizes17.splice(this.choicedPrizeIndex, 1);
-                    if (this.prizes17.length % 2 === 1)
-                        this.$refs[this.prizes17.length - 1][0].classList.add('last');
-                    if (this.prizes17.length === 1)
-                        this.$refs[0][0].classList.add('the-only-left');
+                reduceItem: function (year) {
+                    if (this[`prizes${year}`].length <= 0) return;
+                    let choicedStyle = document.querySelector('.choiced-style');
+                    if (choicedStyle) choicedStyle.classList.remove('choiced-style');
+                    this.streamBg = false;
+                    //如果這一塊獎品沒了
+                    if (this[`prizes${year}`][this.prizeWinId[`year${year}`]].amount == 0)
+                        this[`prizes${year}`].splice(this.prizeWinId[`year${year}`], 1);
                 }
+            },
+            updated: function () {
+                if (this.$refs.turntable.childElementCount % 2 == 1)
+                    this.$refs.turntable.classList.add('odd')
+                else
+                    this.$refs.turntable.classList.remove('odd')
+                if (this.$refs.turntable.childElementCount === 1)
+                    this.$refs.turntable.classList.add('the-only-left');
             }
+
         });
 
     </script>
