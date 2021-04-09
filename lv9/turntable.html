@@ -162,21 +162,6 @@
                     position['left'] = i % 2 == 0 ? `${i * 70}px` : `${i * 70 + Math.floor(Math.random() * i)}px`;
                     position['transform'] = `rotate(${i * Math.floor(Math.random() * 100)}deg)`;
                     return position;
-                    // if (i % 2 === 0) {
-
-                    //     return {
-                    //         top: -Math.floor(Math.random() * 30) + 'px',
-                    //         left: i * 70 + 'px',
-                    //         transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
-                    //     }
-                    // }
-                    // else {
-                    //     return {
-                    //         bottom: -Math.floor(Math.random() * 30) + 'px',
-                    //         left: i * 70 + Math.floor(Math.random() * i) + 'px',
-                    //         transform: `rotate(${i * Math.floor(Math.random() * 100)}deg)`,
-                    //     }
-                    // }
                 },
                 pickPrize: function (e, year) {
                     if (this.isClicked == true) return;
